@@ -1,0 +1,436 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.header {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    padding: 40px;
+    text-align: center;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    padding: 40px;
+}
+
+.sections-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.results-container {
+    position: sticky;
+    top: 20px;
+    height: fit-content;
+}
+
+.calculator-section {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid #e9ecef;
+    margin-bottom: 15px;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 25px;
+    font-weight: 600;
+    border-bottom: 3px solid #4facfe;
+    padding-bottom: 10px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #4facfe;
+    box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+}
+
+.form-group small {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.btn {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    position: sticky;
+    bottom: 10px;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
+}
+
+.results-section {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid #e9ecef;
+}
+
+.result-card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border-left: 4px solid #4facfe;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.result-title {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.result-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #4facfe;
+}
+
+.result-value.positive {
+    color: #28a745;
+}
+
+.result-value.negative {
+    color: #dc3545;
+}
+
+.chart-container {
+    margin-top: 20px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.chart-bar {
+    background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+    height: 20px;
+    border-radius: 10px;
+    margin: 10px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #555;
+}
+
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.comparison-table th,
+.comparison-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.comparison-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+}
+
+.comparison-table tr:hover {
+    background: #f8f9fa;
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 20px;
+    }
+    
+    .sections-container {
+        order: 2;
+    }
+    
+    .results-container {
+        order: 1;
+        position: static;
+    }
+    
+    .header h1 {
+        font-size: 2rem;
+    }
+    
+    .header {
+        padding: 30px 20px;
+    }
+}
+
+.info-tooltip {
+    position: relative;
+    display: inline-block;
+    margin-left: 5px;
+    cursor: help;
+}
+
+.info-tooltip .tooltip-text {
+    visibility: hidden;
+    width: 200px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.9rem;
+}
+
+.info-tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+.cost-category {
+    margin-bottom: 30px;
+}
+
+.input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.input-row input {
+    margin-bottom: 0;
+}
+
+.cost-summary {
+    background: #e8f4fd;
+    border: 2px solid #4facfe;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 10px 0;
+}
+
+.cost-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+    padding: 5px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.cost-item:last-child {
+    border-bottom: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #4facfe;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    border-radius: 10px;
+    margin-bottom: 0;
+    transition: all 0.3s ease;
+}
+
+.section-header:hover {
+    background: linear-gradient(135deg, #3d8bfe 0%, #00d4fe 100%);
+    transform: translateY(-1px);
+}
+
+.section-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.dropdown-icon {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.dropdown-icon.rotated {
+    transform: rotate(180deg);
+}
+
+.section-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background: #f8f9fa;
+    border-radius: 0 0 10px 10px;
+}
+
+.section-content.expanded {
+    max-height: 80vh; /* Set to 80% of viewport height */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.section-content-inner {
+    padding: 30px;
+    min-height: 100%;
+    position: relative;
+}
+
+/* Custom scrollbar styling */
+.section-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.section-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.section-content::-webkit-scrollbar-thumb {
+    background: #4facfe;
+    border-radius: 4px;
+}
+
+.section-content::-webkit-scrollbar-thumb:hover {
+    background: #3d8bfe;
+}
+
+/* Scroll indicator */
+.scroll-indicator {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    background: rgba(79, 172, 254, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.section-content:hover .scroll-indicator {
+    opacity: 1;
+}
+
+/* Ensure modal titles wrap and don't get clipped by other global CSS */
+.modal-dialog {
+  max-width: 1000px !important;
+}
+
+.modal,
+.modal .modal-content {
+  overflow: visible !important;
+}
+
+.modal-header {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 12px !important;
+  padding: 16px 20px !important;
+  background: var(--accent) !important;
+  color: #fff !important;
+}
+
+.modal-header .modal-title,
+.modal-header h5,
+.modal-header .title {
+  flex: 1 1 auto !important;
+  max-width: calc(100% - 70px) !important; /* leave space for close btn */
+  white-space: normal !important;         /* allow wrapping */
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+  line-height: 1.25 !important;
+  margin: 0 !important;
+}
+
+/* Keep close button to the right */
+.modal-header .btn-close {
+  flex: 0 0 auto !important;
+  margin-left: 12px !important;
+  position: static !important;
+  transform: none !important;
+}
