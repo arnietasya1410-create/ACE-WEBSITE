@@ -1,0 +1,103 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-image: url('images/background.jpg');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 10%;
+    background-color: #2A2550;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #00C9A7;
+}
+
+nav a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+}
+
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 60px 10%;
+}
+
+.hero-text {
+    max-width: 50%;
+}
+
+.hero-text h1 {
+    font-size: 48px;
+    color: #00C9A7;
+}
+
+.hero-text p {
+    margin: 20px 0;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.hero-text button {
+    background-color: #00C9A7;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #2A2550;
+    cursor: pointer;
+}
+
+.hero-img img {
+    max-width: 500px;
+    width: 100%;
+}
+
+/* Responsive improvements */
+.brand-logos img {
+    max-height: 80px;
+    height: auto;
+    display: block;
+}
+.newsletter-img {
+    max-height: 160px;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+@media (max-width: 767px) {
+    .brand-logos img {
+        max-height: 40px;
+    }
+    .hero {
+        flex-direction: column;
+        padding: 30px 5%;
+    }
+    .hero-text {
+        max-width: 100%;
+    }
+    .hero .overlay {
+        padding: 20px;
+    }
+}
