@@ -203,7 +203,9 @@ if ($khunLoaded && isset($conn) && $conn instanceof mysqli) {
         while ($row = $q2->fetch_assoc()) $announcements[] = $row;
     }
 
-    usort($announcements, fn($a,$b)=>strtotime($b['created_at'])-strtotime($a['created_at']));
+    usort($announcements, function ($a, $b) {
+        return strtotime($b['created_at']) - strtotime($a['created_at']);
+    });
     $announcements = array_slice($announcements, 0, 5);
 
     $q = $conn->query("
