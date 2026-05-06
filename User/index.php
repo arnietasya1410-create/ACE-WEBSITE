@@ -35,7 +35,7 @@
 
         .hero {
             min-height: 68vh;
-            background-image: url('images/background.JPG');
+            background-image: url('/User/images/background.JPG');
             background-size: cover;
             background-position: center;
             display:flex;
@@ -260,7 +260,7 @@ if ($khunLoaded && isset($conn) && $conn instanceof mysqli) {
                         <div class="col-md-4">
                             <div class="bg-white rounded shadow-sm h-100 d-flex flex-column overflow-hidden">
                                 <div class="newsletter-img" 
-                                     style="background-image:url('<?= $n['image_url'] ?: 'images/newsletter-default.jpg' ?>'); 
+                                     style="background-image:url('<?= $n['image_url'] ?: '/User/images/newsletter-default.jpg' ?>'); 
                                             background-size:cover; background-position:center;">
                                 </div>
                                 <div class="p-3 d-flex flex-column flex-grow-1">
