@@ -32,7 +32,7 @@
         .brand-logos img { max-height:72px; width:auto; margin-right:8px; }
         .hero {
             min-height: 60vh;
-            background-image: url('/ACE/images/IIIP-bg.png');
+            background-image: url('/images/IIIP-bg.png');
             background-size: cover;
             background-position: center center;
             background-repeat: no-repeat;
