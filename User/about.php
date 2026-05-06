@@ -32,7 +32,7 @@
         .brand-logos img { max-height:72px; width:auto; margin-right:8px; }
         .hero {
             min-height: 40vh;
-            background-image: url('/ACE/images/about-bg.jpeg');
+            background-image: url('/images/about-bg.jpeg');
             background-size: cover;
             background-position: center;
             display:flex;
