@@ -1,0 +1,115 @@
+
+=== 2025-12-01 02:48:36 ===
+Raw Input: {"query_id":3,"status":"in_progress","assigned_to":"yuki","admin_notes":"emailng","current_admin":""}
+Session User: yuki
+Parsed Input: Array
+(
+    [query_id] => 3
+    [status] => in_progress
+    [assigned_to] => yuki
+    [admin_notes] => emailng
+    [current_admin] => 
+)
+
+Query ID: 3
+Status: in_progress
+Assigned To: yuki
+Current Admin: 
+SQL: UPDATE (in_progress)
+Binding: status=in_progress, assigned_to=yuki, notes=emailng, id=3
+Execute Result: TRUE
+Affected Rows: 1
+Error: NONE
+DB After Update: Array
+(
+    [status] => in_progress
+    [assigned_to] => yuki
+    [admin_notes] => emailng
+)
+
+
+=== 2025-12-01 02:59:21 ===
+Raw Input: {"query_id":3,"status":"resolved","assigned_to":"yuki","admin_notes":"emailng","current_admin":""}
+Session User: rafiqah
+Parsed Input: Array
+(
+    [query_id] => 3
+    [status] => resolved
+    [assigned_to] => yuki
+    [admin_notes] => emailng
+    [current_admin] => 
+)
+
+Query ID: 3
+Status: resolved
+Assigned To: yuki
+Current Admin: 
+SQL: UPDATE (resolved)
+Execute Result: TRUE
+Affected Rows: 1
+Error: NONE
+DB After Update: Array
+(
+    [status] => resolved
+    [assigned_to] => yuki
+    [admin_notes] => emailng
+)
+
+
+=== 2025-12-01 07:57:54 ===
+Raw Input: {"query_id":4,"status":"in_progress","assigned_to":null,"admin_notes":"emailing","current_admin":""}
+Session User: rafiqah
+Parsed Input: Array
+(
+    [query_id] => 4
+    [status] => in_progress
+    [assigned_to] => 
+    [admin_notes] => emailing
+    [current_admin] => 
+)
+
+Query ID: 4
+Status: in_progress
+Assigned To: NULL
+Current Admin: 
+SQL: UPDATE (in_progress)
+Binding: status=in_progress, assigned_to=, notes=emailing, id=4
+Execute Result: TRUE
+Affected Rows: 1
+Error: NONE
+DB After Update: Array
+(
+    [status] => in_progress
+    [assigned_to] => 
+    [admin_notes] => emailing
+)
+
+
+=== 2025-12-01 07:58:15 ===
+Raw Input: {"query_id":4,"status":"in_progress","assigned_to":"rafiqah","admin_notes":"emailing","current_admin":""}
+Session User: rafiqah
+Parsed Input: Array
+(
+    [query_id] => 4
+    [status] => in_progress
+    [assigned_to] => rafiqah
+    [admin_notes] => emailing
+    [current_admin] => 
+)
+
+Query ID: 4
+Status: in_progress
+Assigned To: rafiqah
+Current Admin: 
+SQL: UPDATE (in_progress)
+Binding: status=in_progress, assigned_to=rafiqah, notes=emailing, id=4
+Execute Result: TRUE
+Affected Rows: 1
+Error: NONE
+DB After Update: Array
+(
+    [status] => in_progress
+    [assigned_to] => rafiqah
+    [admin_notes] => emailing
+)
+
