@@ -156,6 +156,24 @@ $khunLoaded = false;
 $newsletters = [];
 $announcements = [];
 
+function ace_truncate_text($text, $limit = 100, $suffix = '...') {
+    $text = (string)($text ?? '');
+    if ($text === '' || $limit <= 0) {
+        return '';
+    }
+
+    if (function_exists('mb_strimwidth')) {
+        return mb_strimwidth($text, 0, $limit, $suffix);
+    }
+
+    if (strlen($text) <= $limit) {
+        return $text;
+    }
+
+    $cut = max(0, $limit - strlen($suffix));
+    return substr($text, 0, $cut) . $suffix;
+}
+
 if ($khunPath && file_exists($khunPath)) {
     require_once $khunPath;
     $khunLoaded = true;
@@ -249,7 +267,7 @@ if ($khunLoaded && isset($conn) && $conn instanceof mysqli) {
                                     </h6>
                                     <small class="text-muted mb-2"><?= date("j M Y", strtotime($n['created_at'])) ?></small>
                                     <p class="flex-grow-1 mb-3 text-muted small">
-                                        <?= htmlspecialchars(mb_strimwidth($n['summary'] ?? '', 0, 100, '...')) ?>
+                                        <?= htmlspecialchars(ace_truncate_text($n['summary'] ?? '', 100, '...')) ?>
                                     </p>
                                     <div class="mt-auto">
                                         <a href="<?= $n['full_newsletter_url'] ?>" target="_blank" class="btn btn-primary btn-sm">Read more</a>
@@ -296,7 +314,7 @@ if ($khunLoaded && isset($conn) && $conn instanceof mysqli) {
                                         </div>
 
                                         <h6 class="mb-1" style="color:var(--accent); font-size: 0.85rem;">
-                                            <?= htmlspecialchars(mb_strimwidth($ann['title'], 0, 50, '...')) ?>
+                                            <?= htmlspecialchars(ace_truncate_text($ann['title'], 50, '...')) ?>
                                         </h6>
 
                                         <small class="text-muted" style="font-size: 0.7rem;">
