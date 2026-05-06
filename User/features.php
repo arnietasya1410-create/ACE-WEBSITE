@@ -30,7 +30,7 @@
         .brand-logos img { max-height:72px; width:auto; margin-right:8px; }
         .page-hero { 
             min-height: 40vh; 
-            background-image: url('/ACE/images/features-bg-.jpg'); 
+            background-image: url('/images/features-bg-.jpg'); 
             background-size:cover; 
             background-position:center; 
             display:flex; 
@@ -126,13 +126,13 @@
                   </div>
                   <div class="carousel-inner">
                     <div class="carousel-item active">
-                      <img src="/ACE/images/service1-1.jpg" class="d-block w-100" alt="Self-assessment screenshot 1">
+                      <img src="/images/service1-1.JPG" class="d-block w-100" alt="Self-assessment screenshot 1">
                     </div>
                     <div class="carousel-item">
-                      <img src="/ACE/images/service1-2.jpg" class="d-block w-100" alt="Self-assessment screenshot 2">
+                      <img src="/images/service1-2.jpg" class="d-block w-100" alt="Self-assessment screenshot 2">
                     </div>
                     <div class="carousel-item">
-                      <img src="/ACE/images/service1-3.jpg" class="d-block w-100" alt="Self-assessment screenshot 3">
+                      <img src="/images/service1-3.jpg" class="d-block w-100" alt="Self-assessment screenshot 3">
                     </div>
                   </div>
                   <button class="carousel-control-prev" type="button" data-bs-target="#svcCarousel1" data-bs-slide="prev">
@@ -169,10 +169,10 @@
                 <div id="svcCarousel2" class="carousel slide service-carousel" data-bs-ride="carousel">
                   <div class="carousel-inner">
                     <div class="carousel-item active">
-                      <img src="/ACE/images/service2-1.jpeg" class="d-block w-100" alt="Consultancy Programme 1">
+                      <img src="/images/service2-1.jpeg" class="d-block w-100" alt="Consultancy Programme 1">
                     </div>
                     <div class="carousel-item">
-                      <img src="/ACE/images/service2-2.jpg" class="d-block w-100" alt="Consultancy Programme 2">
+                      <img src="/images/service2-2.jpg" class="d-block w-100" alt="Consultancy Programme 2">
                     </div>
                   </div>
                   <button class="carousel-control-prev" type="button" data-bs-target="#svcCarousel2" data-bs-slide="prev">
@@ -211,13 +211,13 @@
                 <div id="svcCarousel3" class="carousel slide service-carousel" data-bs-ride="carousel">
                   <div class="carousel-inner">
                     <div class="carousel-item active">
-                      <img src="/ACE/images/service3-1.jpg" class="d-block w-100" alt="Certificate 1">
+                      <img src="/images/service3-1.jpg" class="d-block w-100" alt="Certificate 1">
                     </div>
                     <div class="carousel-item">
-                      <img src="/ACE/images/service3-2.jpeg" class="d-block w-100" alt="Certificate 2">
+                      <img src="/images/service3-2.jpeg" class="d-block w-100" alt="Certificate 2">
                     </div>
                     <div class="carousel-item">
-                      <img src="/ACE/images/service3-3.jpeg" class="d-block w-100" alt="Certificate 3">
+                      <img src="/images/service3-3.jpeg" class="d-block w-100" alt="Certificate 3">
                     </div>  
                   </div>
                   <button class="carousel-control-prev" type="button" data-bs-target="#svcCarousel3" data-bs-slide="prev">
@@ -255,13 +255,13 @@
                 <div id="svcCarousel4" class="carousel slide service-carousel" data-bs-ride="carousel">
                   <div class="carousel-inner">
                     <div class="carousel-item active">
-                      <img src="/ACE/images/service4-1.jpg" class="d-block w-100" alt="Specialized Course dashboard 1">
+                      <img src="/images/service4-1.jpg" class="d-block w-100" alt="Specialized Course dashboard 1">
                     </div>
                     <div class="carousel-item">
-                      <img src="/ACE/images/service4-2.jpeg" class="d-block w-100" alt="Specialized Course dashboard 2">
+                      <img src="/images/service4-2.jpeg" class="d-block w-100" alt="Specialized Course dashboard 2">
                     </div>
                     <div class="carousel-item">
-                      <img src="/ACE/images/service4-3.jpeg" class="d-block w-100" alt="Specialized Course dashboard 3">
+                      <img src="/images/service4-3.jpeg" class="d-block w-100" alt="Specialized Course dashboard 3">
                     </div>
                   </div>
                   <button class="carousel-control-prev" type="button" data-bs-target="#svcCarousel4" data-bs-slide="prev">
@@ -297,13 +297,13 @@
                 <div id="svcCarousel5" class="carousel slide service-carousel" data-bs-ride="carousel">
                   <div class="carousel-inner">
                     <div class="carousel-item active">
-                      <img src="/ACE/images/service5-1.png" class="d-block w-100" alt="Service 5 image 1">
+                      <img src="/images/service5-1.png" class="d-block w-100" alt="Service 5 image 1">
                     </div>
                     <div class="carousel-item">
-                      <img src="/ACE/images/service5-2.png" class="d-block w-100" alt="Service 5 image 2">
+                      <img src="/images/service5-2.png" class="d-block w-100" alt="Service 5 image 2">
                     </div>
                     <div class="carousel-item">
-                      <img src="/ACE/images/service5-3.png" class="d-block w-100" alt="Service 5 image 3">
+                      <img src="/images/service5-3.png" class="d-block w-100" alt="Service 5 image 3">
                     </div>
                   </div>
                   <button class="carousel-control-prev" type="button" data-bs-target="#svcCarousel5" data-bs-slide="prev">
@@ -340,13 +340,13 @@
                 <div id="svcCarousel7" class="carousel slide service-carousel" data-bs-ride="carousel">
                   <div class="carousel-inner">
                     <div class="carousel-item active">
-                      <img src="/ACE/images/service3-1.jpg" class="d-block w-100" alt="APEL image 1">
+                      <img src="/images/service3-1.jpg" class="d-block w-100" alt="APEL image 1">
                     </div>
                     <div class="carousel-item">
-                      <img src="/ACE/images/service3-2.jpg" class="d-block w-100" alt="APEL image 2">
+                      <img src="/images/service3-2.jpeg" class="d-block w-100" alt="APEL image 2">
                     </div>
                     <div class="carousel-item">
-                      <img src="/ACE/images/service3-3.jpg" class="d-block w-100" alt="APEL image 3">
+                      <img src="/images/service3-3.jpeg" class="d-block w-100" alt="APEL image 3">
                     </div>
                   </div>
                   <button class="carousel-control-prev" type="button" data-bs-target="#svcCarousel7" data-bs-slide="prev">
@@ -378,13 +378,13 @@
                 <div id="svcCarousel6" class="carousel slide service-carousel" data-bs-ride="carousel">
                   <div class="carousel-inner">
                     <div class="carousel-item active">
-                      <img src="/ACE/images/service3-1.jpg" class="d-block w-100" alt="Micro-Credential image 1">
+                      <img src="/images/service3-1.jpg" class="d-block w-100" alt="Micro-Credential image 1">
                     </div>
                     <div class="carousel-item">
-                      <img src="/ACE/images/service3-2.jpg" class="d-block w-100" alt="Micro-Credential image 2">
+                      <img src="/images/service3-2.jpeg" class="d-block w-100" alt="Micro-Credential image 2">
                     </div>
                     <div class="carousel-item">
-                      <img src="/ACE/images/service3-3.jpg" class="d-block w-100" alt="Micro-Credential image 3">
+                      <img src="/images/service3-3.jpeg" class="d-block w-100" alt="Micro-Credential image 3">
                     </div>
                   </div>
                   <button class="carousel-control-prev" type="button" data-bs-target="#svcCarousel6" data-bs-slide="prev">
@@ -416,10 +416,10 @@
                 <div id="svcCarouselCoE" class="carousel slide service-carousel" data-bs-ride="carousel">
                   <div class="carousel-inner">
                     <div class="carousel-item active">
-                      <img src="/ACE/images/coe-1.jpg" class="d-block w-100" alt="CoE 1">
+                      <img src="/images/coe-1.jpg" class="d-block w-100" alt="CoE 1">
                     </div>
                     <div class="carousel-item">
-                      <img src="/ACE/images/coe-2.jpg" class="d-block w-100" alt="CoE 2">
+                      <img src="/images/coe-2.jpg" class="d-block w-100" alt="CoE 2">
                     </div>
                   </div>
                   <button class="carousel-control-prev" type="button" data-bs-target="#svcCarouselCoE" data-bs-slide="prev">
@@ -466,7 +466,7 @@
                 <div id="svcCarouselEvent" class="carousel slide service-carousel" data-bs-ride="carousel">
                   <div class="carousel-inner">
                     <div class="carousel-item active">
-                      <img src="/ACE/images/EV-rental.jpeg" class="d-block w-100" alt="Event Space Rental 1">
+                      <img src="/images/EV-rental.jpeg" class="d-block w-100" alt="Event Space Rental 1">
                     </div>
                   </div>
                   <button class="carousel-control-prev" type="button" data-bs-target="#svcCarouselEvent" data-bs-slide="prev">
