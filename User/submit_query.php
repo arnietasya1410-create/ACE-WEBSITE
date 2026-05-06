@@ -2,14 +2,14 @@
 require_once __DIR__ . '/../admin/_inc.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /ACE/User/courses.php');
+    header('Location: /courses.php');
     exit;
 }
 
 if (!ace_csrf_validate($_POST['csrf_token'] ?? '')) {
     $_SESSION['flash'] = 'Invalid request. Please try again.';
     $_SESSION['flash_type'] = 'error';
-    header('Location: /ACE/User/courses.php');
+    header('Location: /courses.php');
     exit;
 }
 
@@ -17,7 +17,7 @@ $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
 if (!ace_rate_limit('query:' . $ip, 5, 600)) {
     $_SESSION['flash'] = 'Too many submissions. Please wait a few minutes and try again.';
     $_SESSION['flash_type'] = 'error';
-    header('Location: /ACE/User/courses.php');
+    header('Location: /courses.php');
     exit;
 }
 
@@ -44,7 +44,7 @@ if ($stmt->num_rows === 0) {
     $stmt->close();
     $_SESSION['flash'] = 'Invalid programme selected.';
     $_SESSION['flash_type'] = 'error';
-    header("Location: /ACE/User/courses.php");
+    header("Location: /courses.php");
     exit;
 }
 $stmt->close();
