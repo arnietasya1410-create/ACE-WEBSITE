@@ -141,7 +141,7 @@ krsort($newslettersByYear);
             <div class="row g-0">
               <div class="col-md-3">
                 <div class="newsletter-img w-100 h-100" 
-                     style="background-image: url('<?= $img ? $img : '/ACE/images/newsletter-default.jpg' ?>'); 
+                     style="background-image: url('<?= $img ? $img : '/images/newsletter-default.jpg' ?>'); 
                             background-size: cover; 
                             background-position: center;
                             min-height: 200px;">
