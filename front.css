@@ -1,103 +1,80 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
+/* Shared site styles — header + nav + footer centralised here */
+:root{
+  --accent: #6f42c1;
+  --accent-600: #5a35a8;
+  --muted: #f4f4f7;
+  --site-header-height: 100px; /* adjust if you change logo size */
 }
 
-body {
-    background-image: url('images/background.jpg');
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-attachment: fixed;
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
+body{
+  font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  margin:0;
+  padding-top: var(--site-header-height);
+  background-color: var(--muted);
+  scroll-padding-top: var(--site-header-height);
 }
 
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 10%;
-    background-color: #2A2550;
+/* Header / Navbar */
+header.navbar-fixed{
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1100;
+  background: rgba(255,255,255,0.96);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  backdrop-filter: blur(4px);
+}
+.brand-logos { display:flex; align-items:center; gap:12px; }
+.brand-logos img { max-height:72px; width:auto; display:block; height:auto; }
+
+/* Navigation */
+.nav-main { display:flex; align-items:center; gap:16px; }
+.nav-main a {
+  color: #222;
+  text-decoration: none;
+  padding:6px 8px;
+  border-radius:6px;
+  transition: background .12s, color .12s;
+  font-weight:500;
+}
+.nav-main a:hover { background: rgba(111,66,193,0.06); color: var(--accent); }
+.nav-main a.active { color: var(--accent); background: rgba(111,66,193,0.08); }
+
+/* Mobile offcanvas button */
+.offcanvas-toggle-btn { display:block; }
+
+/* Footer */
+.site-footer{
+  background: var(--accent);
+  color: #fff;
+  padding:28px 0;
+  font-size:0.95rem;
+}
+.site-footer a { color: rgba(255,255,255,0.95); text-decoration:none; }
+.site-footer .muted { color: rgba(255,255,255,0.85); }
+
+/* Buttons using accent */
+.btn-accent, .btn-primary {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #fff !important;
+}
+.btn-accent:hover, .btn-primary:hover {
+  background-color: var(--accent-600) !important;
+  border-color: var(--accent-600) !important;
 }
 
-.logo {
-    font-size: 24px;
-    font-weight: bold;
-    color: #00C9A7;
-}
+/* Minor responsive tweaks */
+.brand-logos img { max-height:72px; }
+.newsletter-img { max-height:160px; width:100%; height:auto; object-fit:cover; }
 
-nav a {
-    margin: 0 15px;
-    text-decoration: none;
-    color: white;
-    font-weight: 500;
-}
-
-.hero {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 60px 10%;
-}
-
-.hero-text {
-    max-width: 50%;
-}
-
-.hero-text h1 {
-    font-size: 48px;
-    color: #00C9A7;
-}
-
-.hero-text p {
-    margin: 20px 0;
-    font-size: 18px;
-    line-height: 1.6;
-}
-
-.hero-text button {
-    background-color: #00C9A7;
-    border: none;
-    padding: 12px 30px;
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: bold;
-    color: #2A2550;
-    cursor: pointer;
-}
-
-.hero-img img {
-    max-width: 500px;
-    width: 100%;
-}
-
-/* Responsive improvements */
-.brand-logos img {
-    max-height: 80px;
-    height: auto;
-    display: block;
-}
-.newsletter-img {
-    max-height: 160px;
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-}
 @media (max-width: 767px) {
-    .brand-logos img {
-        max-height: 40px;
-    }
-    .hero {
-        flex-direction: column;
-        padding: 30px 5%;
-    }
-    .hero-text {
-        max-width: 100%;
-    }
-    .hero .overlay {
-        padding: 20px;
-    }
+  .brand-logos img { max-height:40px; }
+  :root{ --site-header-height: 78px; }
+  .nav-main { display:none; }
+  .offcanvas-toggle-btn { display:block; }
+
+  .hero { flex-direction: column; padding: 30px 5%; }
+  .hero .overlay { padding: 20px; }
+  .hero-text { max-width: 100%; }
+  .newsletter-img { max-height:160px; }
 }
