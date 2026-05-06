@@ -18,7 +18,7 @@ if ($programme_id > 0) {
 }
 
 if (!$programme) {
-    header("Location: /ACE/User/courses.php");
+  header("Location: /courses.php");
     exit;
 }
 
@@ -64,7 +64,7 @@ unset($_SESSION['flash'], $_SESSION['flash_type']);
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-  <link rel="stylesheet" href="/ACE/User/front.css" />
+  <link rel="stylesheet" href="/front.css" />
   <style>
     :root {
       --accent: #6f42c1;
@@ -214,7 +214,7 @@ unset($_SESSION['flash'], $_SESSION['flash_type']);
     <!-- Query form (hidden by default) -->
     <div id="queryForm" class="card p-4" style="display:none;">
       <h4>Submit a Query</h4>
-      <form action="/ACE/User/submit_query.php" method="POST" novalidate>
+      <form action="/submit_query.php" method="POST" novalidate>
         <?= ace_csrf_input(); ?>
         <input type="hidden" name="programme_id" value="<?= $programme_id ?>" />
 
@@ -266,7 +266,7 @@ unset($_SESSION['flash'], $_SESSION['flash_type']);
       }
 
       // Redirect to internal registration handler (adjust path if needed)
-      window.location.href = '/ACE/User/submit_registration.php?programme_id=<?= $programme_id ?>&payment_method=' + encodeURIComponent(pm);
+      window.location.href = '/submit_registration.php?programme_id=<?= $programme_id ?>&payment_method=' + encodeURIComponent(pm);
     });
   }
 
