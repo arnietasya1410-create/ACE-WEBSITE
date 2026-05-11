@@ -11,6 +11,14 @@ $success = false;
 $error = '';
 $info = '';
 
+// Allow OTP testing without SMTP only on local/dev environments.
+$request_host = strtolower((string)($_SERVER['HTTP_HOST'] ?? ''));
+$request_ip = (string)($_SERVER['REMOTE_ADDR'] ?? '');
+$is_local_request = in_array($request_ip, ['127.0.0.1', '::1'], true)
+    || str_starts_with($request_host, 'localhost')
+    || str_starts_with($request_host, '127.0.0.1');
+$allow_dev_otp_fallback = (getenv('ACE_DEV_OTP_FALLBACK') === '1') || $is_local_request;
+
 // Get service type from POST (preferred) or URL parameter, default to 'general'
 $service_type = isset($_POST['inquiry_type']) && $_POST['inquiry_type'] !== ''
     ? $_POST['inquiry_type']
@@ -89,8 +97,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $info = 'We sent a verification code to your email (' . substr($email, 0, 3) . '***). Please enter it below to submit your inquiry.';
                     } else {
                         $errorDetail = is_array($result) && isset($result['error']) ? $result['error'] : 'Unknown error';
-                        $error = 'Failed to send verification code: ' . htmlspecialchars($errorDetail);
-                        unset($_SESSION['inquiry_otp_code'], $_SESSION['inquiry_otp_expiry']);
+                        if ($allow_dev_otp_fallback && stripos($errorDetail, 'SMTP credentials missing') !== false) {
+                            $info = 'SMTP is not configured on this local environment. Use this verification code for testing: ' . $otp;
+                        } else {
+                            $error = 'Failed to send verification code: ' . htmlspecialchars($errorDetail);
+                            unset($_SESSION['inquiry_otp_code'], $_SESSION['inquiry_otp_expiry']);
+                        }
                     }
                 } else {
                     if (!$session_otp || $session_expiry < time()) {
