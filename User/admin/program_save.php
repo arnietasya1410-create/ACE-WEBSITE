@@ -3,13 +3,13 @@ require_once __DIR__ . '/_inc.php';
 require_admin();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /User/admin/program_list.php');
+    header('Location: /admin/program_list.php');
     exit;
 }
 
 if (!ace_csrf_validate($_POST['csrf_token'] ?? '')) {
     flash_set('Invalid request. Please try again.');
-    header('Location: /User/admin/program_edit.php' . (!empty($_POST['programme_id']) ? '?id=' . (int)$_POST['programme_id'] : ''));
+    header('Location: /admin/program_edit.php' . (!empty($_POST['programme_id']) ? '?id=' . (int)$_POST['programme_id'] : ''));
     exit;
 }
 $admin_username = $_SESSION['admin_user'] ?? 'Admin';
@@ -32,7 +32,7 @@ if ($person_in_charge === '') $person_in_charge = null;
 
 if (!ace_validate_url_or_empty($form_url)) {
     flash_set('Registration URL is invalid.');
-    header('Location: /User/admin/program_edit.php' . ($programme_id ? "?id=$programme_id" : ''));
+    header('Location: /admin/program_edit.php' . ($programme_id ? "?id=$programme_id" : ''));
     exit;
 }
 
@@ -43,7 +43,7 @@ $payment_messages = $_POST['payment_message'] ?? [];
 // Validate required fields
 if ($title === '' || $programme_category === '' || ($has_packages == 0 && $price == 0)) {
     flash_set('Title, category, and price are required (unless this programme uses payment packages).');
-    header('Location: /User/admin/program_edit.php' . ($programme_id ? "?id=$programme_id" : ''));
+    header('Location: /admin/program_edit.php' . ($programme_id ? "?id=$programme_id" : ''));
     exit;
 }
 
@@ -59,7 +59,7 @@ if ($programme_id > 0) {
     ");
     if (!$stmt) {
         flash_set('Database error: ' . $conn->error);
-        header('Location: /User/admin/program_edit.php?id=' . $programme_id);
+        header('Location: /admin/program_edit.php?id=' . $programme_id);
         exit;
     }
     $stmt->bind_param(
@@ -87,7 +87,7 @@ if ($programme_id > 0) {
     ");
     if (!$stmt) {
         flash_set('Database error: ' . $conn->error);
-        header('Location: /User/admin/program_edit.php');
+        header('Location: /admin/program_edit.php');
         exit;
     }
     $stmt->bind_param(
@@ -198,6 +198,6 @@ if ($is_new) {
 }
 
 // Redirect back to edit page (MOVED TO THE VERY END)
-header("Location: /User/admin/program_edit.php?id=" . $programme_id);
+header("Location: /admin/program_edit.php?id=" . $programme_id);
 exit;
 ?>
