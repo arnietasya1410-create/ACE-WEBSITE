@@ -8,6 +8,26 @@ if ($khunPath && file_exists($khunPath)) {
 
 $newsletters = [];
 
+function ace_normalize_newsletter_image_url($url) {
+  $url = trim((string)($url ?? ''));
+  if ($url === '') {
+    return '';
+  }
+
+  if (preg_match('#^https?://#i', $url)) {
+    return $url;
+  }
+
+  if ($url[0] !== '/') {
+    $url = '/' . $url;
+  }
+
+  $url = preg_replace('#^/User/#', '/', $url);
+  $url = preg_replace('#^/uploads/uploads/#', '/uploads/', $url);
+
+  return $url;
+}
+
 // Load all newsletters from DB
 if ($khunLoaded && isset($conn) && $conn instanceof mysqli) {
     $q = $conn->query(
@@ -133,7 +153,7 @@ krsort($newslettersByYear);
           $title = htmlspecialchars($n['title'] ?? 'Untitled');
           $summary = htmlspecialchars(mb_strimwidth($n['summary'] ?? '', 0, 250, '...'));
           $date = isset($n['created_at']) ? date('j F Y', strtotime($n['created_at'])) : date('j F Y');
-          $img = !empty($n['image_url']) ? htmlspecialchars($n['image_url']) : null;
+          $img = !empty($n['image_url']) ? htmlspecialchars(ace_normalize_newsletter_image_url($n['image_url'])) : null;
           $fullUrl = !empty($n['full_newsletter_url']) ? htmlspecialchars($n['full_newsletter_url']) : '#';
         ?>
         <div class="col-12">
@@ -141,7 +161,7 @@ krsort($newslettersByYear);
             <div class="row g-0">
               <div class="col-md-3">
                 <div class="newsletter-img w-100 h-100" 
-                     style="background-image: url('<?= $img ? $img : '/User/images/newsletter-default.jpg' ?>'); 
+                     style="background-image: url('<?= $img ? $img : '/images/newsletter-default.jpg' ?>'); 
                             background-size: cover; 
                             background-position: center;
                             min-height: 200px;">
