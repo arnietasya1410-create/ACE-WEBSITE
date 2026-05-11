@@ -105,7 +105,7 @@ if (is_super_admin()) {
         <small class="text-muted">Fill in the programme details below</small>
       </div>
       <div>
-        <a href="/User/admin/dashboard.php" class="btn btn-outline-secondary btn-sm">Back to dashboard</a>
+        <a href="/admin/dashboard.php" class="btn btn-outline-secondary btn-sm">Back to dashboard</a>
       </div>
     </div>
 
@@ -116,7 +116,7 @@ if (is_super_admin()) {
     <div class="row">
       <div class="col-lg-8">
         <div class="p-4 bg-white rounded shadow-sm">
-          <form method="post" action="/User/admin/program_save.php" enctype="multipart/form-data" novalidate>
+          <form method="post" action="/admin/program_save.php" enctype="multipart/form-data" novalidate>
             <?= ace_csrf_input(); ?>
             <input type="hidden" name="programme_id" value="<?= $programme ? (int)$programme['programme_id'] : '' ?>">
 
@@ -309,7 +309,7 @@ if (is_super_admin()) {
                <button type="submit" class="btn btn-accent">
                  <?= $programme ? 'Update programme' : 'Create programme' ?>
                </button>
-               <a href="/User/admin/dashboard.php" class="btn btn-outline-secondary">Cancel</a>
+               <a href="/admin/dashboard.php" class="btn btn-outline-secondary">Cancel</a>
              </div>
            </form>
          </div>
@@ -379,7 +379,7 @@ document.getElementById('programme_images_upload').addEventListener('change', fu
 function removeImage(imageId) {
   if (!confirm('Remove this image?')) return;
   
-  fetch('/User/admin/program_image_delete.php', {
+  fetch('/admin/program_image_delete.php', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({image_id: imageId})
