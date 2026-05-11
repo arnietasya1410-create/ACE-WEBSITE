@@ -390,7 +390,7 @@ if ($is_super_admin) {
                 </div>
 
                 <div class="d-flex justify-content-between align-items-center mt-4">
-                    <a href="<?= $is_super_admin ? '/User/admin/super_admin/dashboard.php' : '/User/admin/dashboard.php' ?>" class="btn btn-outline-secondary">
+                    <a href="<?= $is_super_admin ? '/admin/super_admin/dashboard.php' : '/admin/dashboard.php' ?>" class="btn btn-outline-secondary">
                         <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
                     </a>
                     <button type="submit" class="btn btn-primary btn-lg">
