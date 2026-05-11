@@ -4,7 +4,7 @@ require_once __DIR__ . '/_inc.php';
 require_admin();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /User/admin/news_edit.php');
+    header('Location: /admin/news_edit.php');
     exit;
 }
 
@@ -156,7 +156,7 @@ if ($newsletter_id) {
 }
 
 if ($success) {
-    header('Location: /User/admin/news_edit.php?id=' . $newsletter_id);
+    header('Location: /admin/news_edit.php?id=' . $newsletter_id);
 } else {
     header('Location: news_edit.php' . ($newsletter_id ? "?id=$newsletter_id" : ''));
 }
