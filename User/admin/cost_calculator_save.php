@@ -3,7 +3,7 @@ require_once __DIR__ . '/_inc.php';
 require_admin();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /User/admin/directcost.php');
+    header('Location: /admin/directcost.php');
     exit;
 }
 
@@ -14,14 +14,14 @@ if (!ace_csrf_validate($_POST['csrf_token'] ?? '')) {
 
 if (!isset($conn) || !($conn instanceof mysqli)) {
     flash_set('Database is not available.');
-    header('Location: /User/admin/directcost.php');
+    header('Location: /admin/directcost.php');
     exit;
 }
 
 $calcName = trim((string)($_POST['calc_name'] ?? ''));
 if ($calcName === '') {
     flash_set('Please provide a calculator name before saving.');
-    header('Location: /User/admin/directcost.php');
+    header('Location: /admin/directcost.php');
     exit;
 }
 
@@ -38,14 +38,14 @@ $recordId = isset($_POST['record_id']) ? (int)$_POST['record_id'] : 0;
 
 if (!is_array($summary) || !is_array($details)) {
     flash_set('Unable to save: invalid calculation payload.');
-    header('Location: /User/admin/directcost.php');
+    header('Location: /admin/directcost.php');
     exit;
 }
 
 $tableCheck = $conn->query("SHOW TABLES LIKE 'cost_calculator_records'");
 if (!$tableCheck || $tableCheck->num_rows === 0) {
     flash_set('Table cost_calculator_records is missing. Run admin/sql/cost_calculator_tables.sql first.');
-    header('Location: /User/admin/directcost.php');
+    header('Location: /admin/directcost.php');
     exit;
 }
 
@@ -80,7 +80,7 @@ if ($isUpdate) {
     $existingStmt = $conn->prepare("SELECT id FROM cost_calculator_records WHERE id = ? LIMIT 1");
     if (!$existingStmt) {
         flash_set('Unable to update record (prepare failed).');
-        header('Location: /User/admin/directcost.php');
+        header('Location: /admin/directcost.php');
         exit;
     }
     $existingStmt->bind_param('i', $recordId);
@@ -91,7 +91,7 @@ if ($isUpdate) {
 
     if (!$exists) {
         flash_set('Record not found for update.');
-        header('Location: /User/admin/directcost.php');
+        header('Location: /admin/directcost.php');
         exit;
     }
 
@@ -126,7 +126,7 @@ if ($isUpdate) {
 
     if (!$stmt) {
         flash_set('Unable to update record (prepare failed).');
-        header('Location: /User/admin/directcost.php');
+        header('Location: /admin/directcost.php');
         exit;
     }
 
@@ -153,7 +153,7 @@ if ($isUpdate) {
 
     if (!$ok) {
         flash_set('Unable to update record.');
-        header('Location: /User/admin/directcost.php?edit_id=' . $recordId);
+        header('Location: /admin/directcost.php?edit_id=' . $recordId);
         exit;
     }
 
@@ -191,7 +191,7 @@ if ($isUpdate) {
 
     if (!$stmt) {
         flash_set('Unable to save record (prepare failed).');
-        header('Location: /User/admin/directcost.php');
+        header('Location: /admin/directcost.php');
         exit;
     }
 
@@ -218,7 +218,7 @@ if ($isUpdate) {
 
     if (!$ok) {
         flash_set('Unable to save record.');
-        header('Location: /User/admin/directcost.php');
+        header('Location: /admin/directcost.php');
         exit;
     }
 
@@ -228,5 +228,5 @@ if ($isUpdate) {
 }
 
 flash_set('Cost calculator record saved successfully.');
-header('Location: /User/admin/cost_calculator_records.php');
+header('Location: /admin/cost_calculator_records.php');
 exit;
