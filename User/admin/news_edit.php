@@ -76,7 +76,7 @@ if (is_super_admin()) {
         <small class="text-muted">Manage newsletters and communications</small>
       </div>
       <div>
-        <a href="/User/admin/dashboard.php" class="btn btn-outline-secondary btn-sm">
+        <a href="/admin/dashboard.php" class="btn btn-outline-secondary btn-sm">
           <i class="bi bi-arrow-left me-1"></i>Back to dashboard
         </a>
       </div>
@@ -93,7 +93,7 @@ if (is_super_admin()) {
       <!-- Form (left) -->
       <div class="col-lg-8">
         <div class="p-4 bg-white rounded shadow-sm">
-          <form method="post" action="/User/admin/news_save.php" enctype="multipart/form-data" novalidate>
+          <form method="post" action="/admin/news_save.php" enctype="multipart/form-data" novalidate>
             <?= ace_csrf_input(); ?>
             <input type="hidden" name="newsletter_id" value="<?= $newsletter ? (int)$newsletter['newsletter_id'] : '' ?>">
             <input type="hidden" name="existing_image" value="<?= $newsletter ? htmlspecialchars($newsletter['image_url']) : '' ?>">
@@ -183,7 +183,7 @@ if (is_super_admin()) {
               <?php if ($newsletter): ?>
                 <button type="submit"
                         class="btn btn-danger"
-                        formaction="/User/admin/news_delete.php"
+                        formaction="/admin/news_delete.php"
                         formmethod="post"
                         name="delete_newsletter"
                         value="1"
@@ -191,8 +191,8 @@ if (is_super_admin()) {
                   <i class="bi bi-trash"></i> Delete
                 </button>
               <?php endif; ?>
-              <a href="/User/admin/news_edit.php" class="btn btn-outline-secondary">Clear</a>
-              <a href="/User/admin/dashboard.php" class="btn btn-outline-secondary">Cancel</a>
+              <a href="/admin/news_edit.php" class="btn btn-outline-secondary">Clear</a>
+              <a href="/admin/dashboard.php" class="btn btn-outline-secondary">Cancel</a>
             </div>
           </form>
         </div>
