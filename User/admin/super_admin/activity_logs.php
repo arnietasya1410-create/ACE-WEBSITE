@@ -12,15 +12,24 @@ if (!is_super_admin()) {
 $admin_username = $_SESSION['admin_user'] ?? 'Admin';
 $page_title = 'Activity Logs';
 
+// Auto-cleanup retention: keep only latest 3 months of logs.
+$conn->query("DELETE FROM activity_logs WHERE created_at < DATE_SUB(NOW(), INTERVAL 3 MONTH)");
+
 // Filters
 $filter_admin = isset($_GET['admin']) ? trim($_GET['admin']) : '';
 $filter_action = isset($_GET['action']) ? trim($_GET['action']) : '';
 $filter_date_from = isset($_GET['date_from']) ? trim($_GET['date_from']) : '';
 $filter_date_to = isset($_GET['date_to']) ? trim($_GET['date_to']) : '';
+$filter_month = isset($_GET['month']) ? trim($_GET['month']) : '';
+
+if ($filter_month !== '' && !preg_match('/^\d{4}-\d{2}$/', $filter_month)) {
+    $filter_month = '';
+}
 
 // Pagination
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$perPage = 50;
+$page = max(1, $page);
+$perPage = 20;
 $offset = ($page - 1) * $perPage;
 
 // Build query
@@ -52,6 +61,12 @@ if ($filter_date_to !== '') {
     $types .= 's';
 }
 
+if ($filter_month !== '') {
+    $whereConditions[] = "DATE_FORMAT(created_at, '%Y-%m') = ?";
+    $params[] = $filter_month;
+    $types .= 's';
+}
+
 $whereSQL = !empty($whereConditions) ? 'WHERE ' . implode(' AND ', $whereConditions) : '';
 
 // Count total
@@ -67,7 +82,11 @@ if (!empty($params)) {
     $totalRecords = $conn->query($countQuery)->fetch_assoc()['total'];
 }
 
-$totalPages = ceil($totalRecords / $perPage);
+$totalPages = max(1, (int)ceil($totalRecords / $perPage));
+if ($page > $totalPages) {
+    $page = $totalPages;
+    $offset = ($page - 1) * $perPage;
+}
 
 // Fetch logs
 $query = "
@@ -99,6 +118,20 @@ while ($row = $result->fetch_assoc()) {
     $logs[] = $row;
 }
 $stmt->close();
+
+$baseQuery = [
+    'admin' => $filter_admin,
+    'action' => $filter_action,
+    'date_from' => $filter_date_from,
+    'date_to' => $filter_date_to,
+    'month' => $filter_month,
+];
+
+function page_url($pageNumber, $baseQuery) {
+    $query = $baseQuery;
+    $query['page'] = (int)$pageNumber;
+    return '?' . http_build_query($query);
+}
 
 // Get all admins for filter
 $admins = [];
@@ -239,6 +272,11 @@ $action_types = [
                 <label class="form-label"><strong>Date To</strong></label>
                 <input type="date" name="date_to" class="form-control" value="<?= htmlspecialchars($filter_date_to) ?>">
             </div>
+
+            <div class="col-md-2">
+                <label class="form-label"><strong>Month</strong></label>
+                <input type="month" name="month" class="form-control" value="<?= htmlspecialchars($filter_month) ?>">
+            </div>
             
             <div class="col-md-2 d-flex align-items-end">
                 <button type="submit" class="btn btn-primary w-100">
@@ -247,7 +285,7 @@ $action_types = [
             </div>
         </form>
         
-        <?php if ($filter_admin || $filter_action || $filter_date_from || $filter_date_to): ?>
+        <?php if ($filter_admin || $filter_action || $filter_date_from || $filter_date_to || $filter_month): ?>
             <div class="mt-2">
                 <a href="activity_logs.php" class="btn btn-sm btn-outline-secondary">
                     <i class="bi bi-x-circle"></i> Clear Filters
@@ -257,8 +295,9 @@ $action_types = [
     </div>
     
     <!-- Stats -->
-    <div class="alert alert-info">
-        <strong><?= number_format($totalRecords) ?></strong> log entries found
+    <div class="alert alert-info d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <span><strong><?= number_format($totalRecords) ?></strong> log entries found</span>
+        <span class="small text-muted">Page <?= $page ?> of <?= $totalPages ?></span>
     </div>
     
     <!-- Logs Table -->
@@ -313,7 +352,7 @@ $action_types = [
             <ul class="pagination justify-content-center">
                 <?php if ($page > 1): ?>
                     <li class="page-item">
-                        <a class="page-link" href="?page=<?= $page - 1 ?>&admin=<?= urlencode($filter_admin) ?>&action=<?= urlencode($filter_action) ?>&date_from=<?= urlencode($filter_date_from) ?>&date_to=<?= urlencode($filter_date_to) ?>">
+                        <a class="page-link" href="<?= htmlspecialchars(page_url($page - 1, $baseQuery)) ?>">
                             Previous
                         </a>
                     </li>
@@ -321,7 +360,7 @@ $action_types = [
                 
                 <?php for ($i = max(1, $page - 2); $i <= min($totalPages, $page + 2); $i++): ?>
                     <li class="page-item <?= $i === $page ? 'active' : '' ?>">
-                        <a class="page-link" href="?page=<?= $i ?>&admin=<?= urlencode($filter_admin) ?>&action=<?= urlencode($filter_action) ?>&date_from=<?= urlencode($filter_date_from) ?>&date_to=<?= urlencode($filter_date_to) ?>">
+                        <a class="page-link" href="<?= htmlspecialchars(page_url($i, $baseQuery)) ?>">
                             <?= $i ?>
                         </a>
                     </li>
@@ -329,7 +368,7 @@ $action_types = [
                 
                 <?php if ($page < $totalPages): ?>
                     <li class="page-item">
-                        <a class="page-link" href="?page=<?= $page + 1 ?>&admin=<?= urlencode($filter_admin) ?>&action=<?= urlencode($filter_action) ?>&date_from=<?= urlencode($filter_date_from) ?>&date_to=<?= urlencode($filter_date_to) ?>">
+                        <a class="page-link" href="<?= htmlspecialchars(page_url($page + 1, $baseQuery)) ?>">
                             Next
                         </a>
                     </li>
