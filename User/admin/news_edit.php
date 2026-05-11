@@ -2,6 +2,26 @@
 require_once __DIR__ . '/_inc.php';
 require_admin(); // Allows both admin and super_admin
 
+function ace_normalize_newsletter_image_url($url) {
+  $url = trim((string)($url ?? ''));
+  if ($url === '') {
+    return '';
+  }
+
+  if (preg_match('#^https?://#i', $url)) {
+    return $url;
+  }
+
+  if ($url[0] !== '/') {
+    $url = '/' . $url;
+  }
+
+  $url = preg_replace('#^/User/#', '/', $url);
+  $url = preg_replace('#^/uploads/uploads/#', '/uploads/', $url);
+
+  return $url;
+}
+
 $admin_username = $_SESSION['admin_user'] ?? 'Admin';
 
 $newsletter = null;
@@ -96,7 +116,7 @@ if (is_super_admin()) {
           <form method="post" action="/admin/news_save.php" enctype="multipart/form-data" novalidate>
             <?= ace_csrf_input(); ?>
             <input type="hidden" name="newsletter_id" value="<?= $newsletter ? (int)$newsletter['newsletter_id'] : '' ?>">
-            <input type="hidden" name="existing_image" value="<?= $newsletter ? htmlspecialchars($newsletter['image_url']) : '' ?>">
+            <input type="hidden" name="existing_image" value="<?= $newsletter ? htmlspecialchars(ace_normalize_newsletter_image_url($newsletter['image_url'])) : '' ?>">
 
             <!-- Basic Info -->
             <div class="form-section">
@@ -144,7 +164,7 @@ if (is_super_admin()) {
               <?php if ($newsletter && !empty($newsletter['image_url'])): ?>
                 <div class="mt-3">
                   <small class="text-muted d-block mb-2">Current image:</small>
-                  <img src="<?= htmlspecialchars($newsletter['image_url']) ?>" alt="preview" class="image-preview">
+                  <img src="<?= htmlspecialchars(ace_normalize_newsletter_image_url($newsletter['image_url'])) ?>" alt="preview" class="image-preview">
                   <div class="form-check mt-2">
                     <input type="checkbox" class="form-check-input" id="remove_image" name="remove_image" value="1">
                     <label class="form-check-label" for="remove_image">
