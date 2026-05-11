@@ -143,12 +143,12 @@ unset($_SESSION['flash'], $_SESSION['flash_type']);
         <?php if (!empty($images)): ?>
           <?php foreach ($images as $idx => $img): ?>
             <div class="carousel-item <?= $idx === 0 ? 'active' : '' ?>">
-              <img src="<?= htmlspecialchars($img['filename']) ?>" class="d-block w-100" alt="Programme Image" onerror="this.src='/User/images/no-image.png'" />
+              <img src="<?= htmlspecialchars($img['filename']) ?>" class="d-block w-100" alt="Programme Image" onerror="this.src='/images/no-image.png'" />
             </div>
           <?php endforeach; ?>
         <?php else: ?>
           <div class="carousel-item active">
-            <img src="/User/images/no-image.png" class="d-block w-100" alt="No Image" />
+            <img src="/images/no-image.png" class="d-block w-100" alt="No Image" />
           </div>
         <?php endif; ?>
       </div>
