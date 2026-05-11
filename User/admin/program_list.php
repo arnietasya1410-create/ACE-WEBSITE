@@ -139,7 +139,7 @@ if (is_super_admin()) {
         <h4 class="mb-0"><?= htmlspecialchars($page_title) ?></h4>
         <small class="text-muted">Browse and manage all programmes</small>
       </div>
-      <a href="/User/admin/program_edit.php" class="btn btn-accent btn-sm">+ Create New</a>
+      <a href="/admin/program_edit.php" class="btn btn-accent btn-sm">+ Create New</a>
     </div>
 
     <!-- Search & Filter Bar -->
@@ -298,11 +298,11 @@ if (is_super_admin()) {
             </div>
 
             <div class="modal-footer">
-              <a href="/User/admin/program_edit.php?id=<?= $p['programme_id'] ?>" class="btn btn-accent">
+              <a href="/admin/program_edit.php?id=<?= $p['programme_id'] ?>" class="btn btn-accent">
                 <i class="bi bi-pencil"></i> Edit
               </a>
 
-              <form method="post" action="/User/admin/program_delete.php" class="d-inline" onsubmit="return confirm('Delete this programme? This action cannot be undone.');">
+              <form method="post" action="/admin/program_delete.php" class="d-inline" onsubmit="return confirm('Delete this programme? This action cannot be undone.');">
                 <?= ace_csrf_input(); ?>
                 <input type="hidden" name="programme_id" value="<?= $p['programme_id'] ?>">
                 <button type="submit" class="btn btn-outline-danger">
