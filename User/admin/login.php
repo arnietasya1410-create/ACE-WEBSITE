@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../security.php';
+require_once __DIR__ . '/../../security.php';
 ace_set_security_headers();
 ace_secure_session_start();
 require_once __DIR__ . '/_inc.php';
