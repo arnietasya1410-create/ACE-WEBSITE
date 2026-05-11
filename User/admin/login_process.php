@@ -81,9 +81,9 @@ if (password_verify($password, $admin['password_hash'])) {
     
     // Redirect based on role
     if ($admin['role'] === 'super_admin') {
-        header('Location: /User/admin/super_admin/dashboard.php');
+        header('Location: /admin/super_admin/dashboard.php');
     } else {
-        header('Location: /User/admin/dashboard.php');
+        header('Location: /admin/dashboard.php');
     }
     exit;
 } else {
