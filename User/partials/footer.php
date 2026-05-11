@@ -7,7 +7,7 @@
         <h5>Contact Us</h5>
         <div class="muted">Email: ace.rcmp@unikl.edu.my</div>
         <div class="muted">Phone: 1300 22 7267 / +605 226 3600</div>
-        <button class="btn btn-success mt-2" onclick="window.location.href='/User/admin/login.php'">Staff Login</button>
+        <button class="btn btn-success mt-2" onclick="window.location.href='/admin/login.php'">Staff Login</button>
       </div>
       <div class="col-md-6 text-md-end">
         <small>&copy; <?= date('Y') ?> ACE , UniKL RCMP. All rights reserved.</small>
