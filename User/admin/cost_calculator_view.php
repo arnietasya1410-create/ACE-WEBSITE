@@ -68,16 +68,16 @@ if (is_super_admin()) {
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h4 class="mb-0">Cost Calculator Record</h4>
       <div class="d-flex gap-2">
-        <a href="/User/admin/cost_calculator_records.php" class="btn btn-outline-secondary btn-sm">Back to List</a>
-        <a href="/User/admin/directcost.php?edit_id=<?= (int)$recordId ?>" class="btn btn-outline-warning btn-sm">Edit Record</a>
+        <a href="/admin/cost_calculator_records.php" class="btn btn-outline-secondary btn-sm">Back to List</a>
+        <a href="/admin/directcost.php?edit_id=<?= (int)$recordId ?>" class="btn btn-outline-warning btn-sm">Edit Record</a>
         <?php if ($record && (($record['created_by_username'] ?? '') === $admin_username)): ?>
-          <form method="post" action="/User/admin/cost_calculator_delete.php" class="d-inline" onsubmit="return confirm('Delete this calculator record?');">
+          <form method="post" action="/admin/cost_calculator_delete.php" class="d-inline" onsubmit="return confirm('Delete this calculator record?');">
             <?= ace_csrf_input(); ?>
             <input type="hidden" name="record_id" value="<?= (int)$recordId ?>">
             <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
           </form>
         <?php endif; ?>
-        <a href="/User/admin/directcost.php" class="btn btn-accent btn-sm">Open Calculator</a>
+        <a href="/admin/directcost.php" class="btn btn-accent btn-sm">Open Calculator</a>
       </div>
     </div>
 
