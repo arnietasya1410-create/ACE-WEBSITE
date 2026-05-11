@@ -67,10 +67,10 @@ if (is_super_admin()) {
         <small class="text-muted">Manage programmes, newsletters and tools</small>
       </div>
       <div>
-        <a href="/User/admin/news_edit.php" class="btn btn-outline-secondary btn-sm">Manage Newsletters</a>
-        <a href="/User/admin/social_media.php" class="btn btn-outline-secondary btn-sm">Manage Social Media</a>
-        <a href="/User/admin/change_password.php" class="btn btn-outline-secondary btn-sm">Change Password</a>
-        <a href="/User/admin/logout.php" class="btn btn-outline-danger btn-sm">Logout</a>
+        <a href="/admin/news_edit.php" class="btn btn-outline-secondary btn-sm">Manage Newsletters</a>
+        <a href="/admin/social_media.php" class="btn btn-outline-secondary btn-sm">Manage Social Media</a>
+        <a href="/admin/change_password.php" class="btn btn-outline-secondary btn-sm">Change Password</a>
+        <a href="/admin/logout.php" class="btn btn-outline-danger btn-sm">Logout</a>
       </div>
     </div>
 
@@ -86,7 +86,7 @@ if (is_super_admin()) {
             <small class="text-muted">Add a new programme (title, description, price).</small>
           </div>
           <div class="mt-auto">
-            <a href="/User/admin/program_edit.php" class="btn btn-accent btn-sm">Create programme</a>
+            <a href="/admin/program_edit.php" class="btn btn-accent btn-sm">Create programme</a>
           </div>
         </div>
       </div>
@@ -98,7 +98,7 @@ if (is_super_admin()) {
             <small class="text-muted">Edit or remove existing programmes.</small>
           </div>
           <div class="mt-auto">
-            <a href="/User/admin/program_list.php" class="btn btn-accent btn-sm">View programmes</a>
+            <a href="/admin/program_list.php" class="btn btn-accent btn-sm">View programmes</a>
           </div>
         </div>
       </div>
@@ -110,7 +110,7 @@ if (is_super_admin()) {
             <small class="text-muted">Open the direct cost calculator to estimate programme costs.</small>
           </div>
           <div class="mt-auto">
-            <a href="/User/admin/directcost.php" target="_blank" class="btn btn-accent btn-sm">Open calculator</a>
+            <a href="/admin/directcost.php" target="_blank" class="btn btn-accent btn-sm">Open calculator</a>
           </div>
         </div>
       </div>
@@ -141,8 +141,8 @@ if (is_super_admin()) {
               <div class="text-muted small mt-2">Price: RM<?= $price ?: 'N/A' ?> • Created: <?= $created ?></div>
             </div>
             <div class="mt-auto d-flex gap-2">
-              <a href="/User/admin/program_edit.php?id=<?= $id ?>" class="btn btn-outline-secondary btn-sm">Edit</a>
-              <form method="post" action="/User/admin/program_delete.php" class="d-inline" onsubmit="return confirm('Delete this programme?');">
+              <a href="/admin/program_edit.php?id=<?= $id ?>" class="btn btn-outline-secondary btn-sm">Edit</a>
+              <form method="post" action="/admin/program_delete.php" class="d-inline" onsubmit="return confirm('Delete this programme?');">
                 <?= ace_csrf_input(); ?>
                 <input type="hidden" name="programme_id" value="<?= $id ?>">
                 <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
