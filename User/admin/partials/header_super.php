@@ -12,7 +12,7 @@ if (isset($conn) && $conn instanceof mysqli) {
     }
 }
 ?>
-<link rel="stylesheet" href="/User/front.css">
+<link rel="stylesheet" href="/front.css">
 <header class="navbar-fixed">
   <div class="container-fluid d-flex align-items-center justify-content-between py-2 px-3">
     <div class="d-flex align-items-center">
