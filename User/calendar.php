@@ -162,7 +162,7 @@ function badge_class($cat) {
             <div class="row g-0">
               <div class="col-md-3">
                 <div class="event-img w-100 h-100" 
-                     style="background-image: url('<?= $img ? $img : '/User/images/programme-default.jpg' ?>'); background-size: cover; background-position: center; min-height:140px;">
+                     style="background-image: url('<?= $img ? $img : '/images/programme-default.jpg' ?>'); background-size: cover; background-position: center; min-height:140px;">
                 </div>
               </div>
               <div class="col-md-9">
