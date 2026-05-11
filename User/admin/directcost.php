@@ -138,7 +138,7 @@ if (is_super_admin()) {
                 <div class="alert alert-info"><?= htmlspecialchars($flash) ?></div>
             <?php endif; ?>
             
-            <form id="save_calc_form" method="post" action="/User/admin/cost_calculator_save.php" onsubmit="return prepareSavePayload()">
+            <form id="save_calc_form" method="post" action="/admin/cost_calculator_save.php" onsubmit="return prepareSavePayload()">
                 <?= ace_csrf_input(); ?>
                 <input type="hidden" name="record_id" id="record_id" value="<?= (int)($edit_record['id'] ?? 0) ?>">
                 <input type="hidden" name="summary_payload" id="summary_payload">
@@ -171,7 +171,7 @@ if (is_super_admin()) {
                     <div class="col-md-4 mt-3 d-flex gap-2 justify-content-md-end align-items-end">
                         <button type="button" class="btn btn-outline-danger btn-sm" onclick="resetAllAndRecalculate()">Reset All</button>
                         <button type="submit" class="btn btn-accent btn-sm">Save</button>
-                        <a href="/User/admin/cost_calculator_records.php" class="btn btn-outline-secondary btn-sm">Saved Records</a>
+                        <a href="/admin/cost_calculator_records.php" class="btn btn-outline-secondary btn-sm">Saved Records</a>
                     </div>
                 </div>
             </div>
