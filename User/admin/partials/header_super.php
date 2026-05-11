@@ -16,7 +16,7 @@ if (isset($conn) && $conn instanceof mysqli) {
 <header class="navbar-fixed">
   <div class="container-fluid d-flex align-items-center justify-content-between py-2 px-3">
     <div class="d-flex align-items-center">
-      <a href="/User/admin/super_admin/dashboard.php" class="me-2 brand-logos d-flex align-items-center">
+      <a href="/admin/super_admin/dashboard.php" class="me-2 brand-logos d-flex align-items-center">
         <img src="/images/ACE.png" alt="ACE LOGO" style="height:65px;">
         <img src="/images/uniklrcmp.png" alt="UniKL RCMP" style="height:65px;">
         <img src="/images/hrdcorp.png" alt="HRD corp" style="height:65px;">
@@ -24,8 +24,8 @@ if (isset($conn) && $conn instanceof mysqli) {
     </div>
 
     <nav class="nav-main d-none d-lg-flex">
-      <a href="/User/admin/super_admin/dashboard.php" class="<?= nav_active('dashboard.php', $current) ?>">Dashboard</a>
-      <a href="/User/admin/super_admin/admin_management.php" class="<?= nav_active('admin_management.php', $current) ?> position-relative">
+      <a href="/admin/super_admin/dashboard.php" class="<?= nav_active('dashboard.php', $current) ?>">Dashboard</a>
+      <a href="/admin/super_admin/admin_management.php" class="<?= nav_active('admin_management.php', $current) ?> position-relative">
         Admins
         <?php if ($locked_count > 0): ?>
           <span class="badge bg-danger ms-1" style="font-size: 0.7rem; vertical-align: middle;">
@@ -33,10 +33,10 @@ if (isset($conn) && $conn instanceof mysqli) {
           </span>
         <?php endif; ?>
       </a>
-      <a href="/User/admin/program_list.php" class="<?= nav_active('program_list.php', $current) ?>">Programmes</a>
-      <a href="/User/admin/news_edit.php" class="<?= nav_active('news_edit.php', $current) ?>">Newsletters</a>
-      <a href="/User/admin/super_admin/activity_logs.php" class="<?= nav_active('activity_logs.php', $current) ?>">Logs</a>
-      <a href="/User/admin/logout.php" class="text-danger">Logout</a>
+      <a href="/admin/program_list.php" class="<?= nav_active('program_list.php', $current) ?>">Programmes</a>
+      <a href="/admin/news_edit.php" class="<?= nav_active('news_edit.php', $current) ?>">Newsletters</a>
+      <a href="/admin/super_admin/activity_logs.php" class="<?= nav_active('activity_logs.php', $current) ?>">Logs</a>
+      <a href="/admin/logout.php" class="text-danger">Logout</a>
     </nav>
 
     <div class="d-lg-none">
@@ -52,12 +52,12 @@ if (isset($conn) && $conn instanceof mysqli) {
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
   </div>
   <div class="offcanvas-body">
-    <a class="d-block py-2" href="/User/admin/super_admin/dashboard.php">Dashboard</a>
-    <a class="d-block py-2" href="/User/admin/super_admin/admin_management.php">Admins <?php if ($locked_count > 0) echo "($locked_count)"; ?></a>
-    <a class="d-block py-2" href="/User/admin/program_list.php">Programmes</a>
-    <a class="d-block py-2" href="/User/admin/news_edit.php">Newsletters</a>
-    <a class="d-block py-2" href="/User/admin/super_admin/activity_logs.php">Logs</a>
-    <a class="d-block py-2 text-danger" href="/User/admin/logout.php">Logout</a>
+    <a class="d-block py-2" href="/admin/super_admin/dashboard.php">Dashboard</a>
+    <a class="d-block py-2" href="/admin/super_admin/admin_management.php">Admins <?php if ($locked_count > 0) echo "($locked_count)"; ?></a>
+    <a class="d-block py-2" href="/admin/program_list.php">Programmes</a>
+    <a class="d-block py-2" href="/admin/news_edit.php">Newsletters</a>
+    <a class="d-block py-2" href="/admin/super_admin/activity_logs.php">Logs</a>
+    <a class="d-block py-2 text-danger" href="/admin/logout.php">Logout</a>
   </div>
 </div>
 
@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Auto-refresh notification badges every 30 seconds
 setInterval(function() {
   // Fetch queries count
-  fetch('/User/admin/get_pending_count.php')
+  fetch('/admin/get_pending_count.php')
     .then(response => response.json())
     .then(data => {
       updateBadge('queriesBadgeDropdown', data.count);
@@ -197,7 +197,7 @@ setInterval(function() {
     .catch(err => console.error('Failed to fetch pending count:', err));
 
   // Fetch inquiries count
-  fetch('/User/admin/get_pending_inquiries_count.php')
+  fetch('/admin/get_pending_inquiries_count.php')
     .then(response => response.json())
     .then(data => {
       updateBadge('inquiriesBadgeDropdown', data.count);
