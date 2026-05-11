@@ -7,9 +7,9 @@ function nav_active($name, $current){ return $name === $current ? ' active' : ''
   <div class="container d-flex align-items-center justify-content-between py-2">
     <div class="d-flex align-items-center">
       <a href="index.php" class="me-2 brand-logos d-flex align-items-center">
-        <img src="/User/images/ACE.png" alt="ACE LOGO" class="brand-logo img-fluid">
-        <img src="/User/images/uniklrcmp.png" alt="UniKL RCMP" class="brand-logo img-fluid">
-        <img src="/User/images/hrdcorp.png" alt="HRD corp" class="brand-logo img-fluid">
+        <img src="/images/ACE.png" alt="ACE LOGO" class="brand-logo img-fluid">
+        <img src="/images/uniklrcmp.png" alt="UniKL RCMP" class="brand-logo img-fluid">
+        <img src="/images/hrdcorp.png" alt="HRD corp" class="brand-logo img-fluid">
       </a>
     </div>
 
