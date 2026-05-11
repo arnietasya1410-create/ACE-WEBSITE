@@ -1,346 +1,282 @@
 <?php
 
-require_once __DIR__ . '/../_inc.php';
-require_admin();
+$current = basename($_SERVER['PHP_SELF'] ?? '');
+function nav_active($name, $current){ return $name === $current ? ' active' : ''; }
 
-// Only super admins can view logs
-if (!is_super_admin()) {
-    header('Location: ../dashboard.php');
-    exit;
+// Get locked admins count
+$locked_count = 0;
+if (isset($conn) && $conn instanceof mysqli) {
+    $result = $conn->query("SELECT COUNT(*) as count FROM admins WHERE is_locked = 1");
+    if ($result) {
+        $locked_count = $result->fetch_assoc()['count'];
+    }
 }
-
-$admin_username = $_SESSION['admin_user'] ?? 'Admin';
-$page_title = 'Activity Logs';
-
-// Filters
-$filter_admin = isset($_GET['admin']) ? trim($_GET['admin']) : '';
-$filter_action = isset($_GET['action']) ? trim($_GET['action']) : '';
-$filter_date_from = isset($_GET['date_from']) ? trim($_GET['date_from']) : '';
-$filter_date_to = isset($_GET['date_to']) ? trim($_GET['date_to']) : '';
-
-// Pagination
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$perPage = 50;
-$offset = ($page - 1) * $perPage;
-
-// Build query
-$whereConditions = [];
-$params = [];
-$types = '';
-
-if ($filter_admin !== '') {
-    $whereConditions[] = "admin_username = ?";
-    $params[] = $filter_admin;
-    $types .= 's';
-}
-
-if ($filter_action !== '') {
-    $whereConditions[] = "action_type = ?";
-    $params[] = $filter_action;
-    $types .= 's';
-}
-
-if ($filter_date_from !== '') {
-    $whereConditions[] = "DATE(created_at) >= ?";
-    $params[] = $filter_date_from;
-    $types .= 's';
-}
-
-if ($filter_date_to !== '') {
-    $whereConditions[] = "DATE(created_at) <= ?";
-    $params[] = $filter_date_to;
-    $types .= 's';
-}
-
-$whereSQL = !empty($whereConditions) ? 'WHERE ' . implode(' AND ', $whereConditions) : '';
-
-// Count total
-$countQuery = "SELECT COUNT(*) as total FROM activity_logs $whereSQL";
-if (!empty($params)) {
-    $stmt = $conn->prepare($countQuery);
-    $stmt->bind_param($types, ...$params);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $totalRecords = $result->fetch_assoc()['total'];
-    $stmt->close();
-} else {
-    $totalRecords = $conn->query($countQuery)->fetch_assoc()['total'];
-}
-
-$totalPages = ceil($totalRecords / $perPage);
-
-// Fetch logs
-$query = "
-    SELECT * FROM activity_logs 
-    $whereSQL 
-    ORDER BY created_at DESC 
-    LIMIT ? OFFSET ?
-";
-
-$paramsCopy = $params;
-$paramsCopy[] = $perPage;
-$paramsCopy[] = $offset;
-$typesCopy = $types . 'ii';
-
-if (!empty($params)) {
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param($typesCopy, ...$paramsCopy);
-    $stmt->execute();
-    $result = $stmt->get_result();
-} else {
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param('ii', $perPage, $offset);
-    $stmt->execute();
-    $result = $stmt->get_result();
-}
-
-$logs = [];
-while ($row = $result->fetch_assoc()) {
-    $logs[] = $row;
-}
-$stmt->close();
-
-// Get all admins for filter
-$admins = [];
-$q = $conn->query("SELECT DISTINCT admin_username FROM activity_logs ORDER BY admin_username");
-while ($row = $q->fetch_assoc()) {
-    $admins[] = $row['admin_username'];
-}
-
-// Action types for filter
-$action_types = [
-    'authentication' => 'Authentication',
-    'programme' => 'Programme',
-    'application' => 'Application',
-    'query' => 'Query',
-    'admin_management' => 'Admin Management',
-    'settings' => 'Settings'
-];
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $page_title ?> — ACE Admin</title>
-    <link rel="stylesheet" href="/front.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        :root {
-            --accent: #6f42c1;
-        }
-        
-        body {
-            background: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        .section-card {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            margin: 30px auto;
-            max-width: 1400px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-        
-        .log-table {
-            font-size: 0.9rem;
-        }
-        
-        .log-table th {
-            background: var(--accent);
-            color: white;
-            font-weight: 600;
-            padding: 12px;
-            white-space: nowrap;
-        }
-        
-        .log-table td {
-            padding: 10px;
-            vertical-align: middle;
-        }
-        
-        .badge-action {
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-        
-        .action-authentication { background: #e3f2fd; color: #1976d2; }
-        .action-programme { background: #f3e5f5; color: #7b1fa2; }
-        .action-application { background: #fff3e0; color: #f57c00; }
-        .action-query { background: #e8f5e9; color: #388e3c; }
-        .action-admin_management { background: #ffebee; color: #c62828; }
-        .action-settings { background: #f5f5f5; color: #616161; }
-        
-        .filter-card {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .pagination .page-link {
-            color: var(--accent);
-        }
-        
-        .pagination .page-item.active .page-link {
-            background: var(--accent);
-            border-color: var(--accent);
-        }
-    </style>
-</head>
-<body>
+<link rel="stylesheet" href="/front.css">
+<header class="navbar-fixed">
+  <div class="container-fluid d-flex align-items-center justify-content-between py-2 px-3">
+    <div class="d-flex align-items-center">
+      <a href="/admin/super_admin/dashboard.php" class="me-2 brand-logos d-flex align-items-center">
+        <img src="/images/ACE.png" alt="ACE LOGO" style="height:65px;">
+        <img src="/images/uniklrcmp.png" alt="UniKL RCMP" style="height:65px;">
+        <img src="/images/hrdcorp.png" alt="HRD corp" style="height:65px;">
+      </a>
+    </div>
 
-<?php require_once __DIR__ . '/../partials/header_super.php'; ?>
-
-<section class="section-card">
-    <h2 style="color: var(--accent); margin-bottom: 25px;">
-        <i class="bi bi-clock-history"></i> Activity Logs
-    </h2>
-    
-    <!-- Filters -->
-    <div class="filter-card">
-        <form method="GET" class="row g-3">
-            <div class="col-md-3">
-                <label class="form-label"><strong>Admin</strong></label>
-                <select name="admin" class="form-select">
-                    <option value="">All Admins</option>
-                    <?php foreach ($admins as $admin): ?>
-                        <option value="<?= htmlspecialchars($admin) ?>" <?= $filter_admin === $admin ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($admin) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            
-            <div class="col-md-3">
-                <label class="form-label"><strong>Action Type</strong></label>
-                <select name="action" class="form-select">
-                    <option value="">All Actions</option>
-                    <?php foreach ($action_types as $value => $label): ?>
-                        <option value="<?= $value ?>" <?= $filter_action === $value ? 'selected' : '' ?>>
-                            <?= $label ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            
-            <div class="col-md-2">
-                <label class="form-label"><strong>Date From</strong></label>
-                <input type="date" name="date_from" class="form-control" value="<?= htmlspecialchars($filter_date_from) ?>">
-            </div>
-            
-            <div class="col-md-2">
-                <label class="form-label"><strong>Date To</strong></label>
-                <input type="date" name="date_to" class="form-control" value="<?= htmlspecialchars($filter_date_to) ?>">
-            </div>
-            
-            <div class="col-md-2 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="bi bi-funnel"></i> Filter
-                </button>
-            </div>
-        </form>
-        
-        <?php if ($filter_admin || $filter_action || $filter_date_from || $filter_date_to): ?>
-            <div class="mt-2">
-                <a href="activity_logs.php" class="btn btn-sm btn-outline-secondary">
-                    <i class="bi bi-x-circle"></i> Clear Filters
-                </a>
-            </div>
+    <nav class="nav-main d-none d-lg-flex">
+      <a href="/admin/super_admin/dashboard.php" class="<?= nav_active('dashboard.php', $current) ?>">Dashboard</a>
+      <a href="/admin/super_admin/admin_management.php" class="<?= nav_active('admin_management.php', $current) ?> position-relative">
+        Admins
+        <?php if ($locked_count > 0): ?>
+          <span class="badge bg-danger ms-1" style="font-size: 0.7rem; vertical-align: middle;">
+            <?= $locked_count ?>
+          </span>
         <?php endif; ?>
-    </div>
-    
-    <!-- Stats -->
-    <div class="alert alert-info">
-        <strong><?= number_format($totalRecords) ?></strong> log entries found
-    </div>
-    
-    <!-- Logs Table -->
-    <div class="table-responsive">
-        <table class="table table-hover log-table">
-            <thead>
-                <tr>
-                    <th style="width: 140px;">Date & Time</th>
-                    <th style="width: 120px;">Admin</th>
-                    <th style="width: 150px;">Action Type</th>
-                    <th>Description</th>
-                    <th style="width: 120px;">IP Address</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (empty($logs)): ?>
-                    <tr>
-                        <td colspan="5" class="text-center text-muted py-4">
-                            <i class="bi bi-inbox" style="font-size: 2rem;"></i><br>
-                            No activity logs found
-                        </td>
-                    </tr>
-                <?php else: ?>
-                    <?php foreach ($logs as $log): ?>
-                        <tr>
-                            <td>
-                                <small class="text-muted">
-                                    <?= date('M d, Y', strtotime($log['created_at'])) ?><br>
-                                    <?= date('h:i A', strtotime($log['created_at'])) ?>
-                                </small>
-                            </td>
-                            <td>
-                                <strong><?= htmlspecialchars($log['admin_username']) ?></strong>
-                            </td>
-                            <td>
-                                <span class="badge-action action-<?= htmlspecialchars($log['action_type']) ?>">
-                                    <?= $action_types[$log['action_type']] ?? htmlspecialchars($log['action_type']) ?>
-                                </span>
-                            </td>
-                            <td><?= htmlspecialchars($log['action_description']) ?></td>
-                            <td><code><?= htmlspecialchars($log['ip_address']) ?></code></td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </tbody>
-        </table>
-    </div>
-    
-    <!-- Pagination -->
-    <?php if ($totalPages > 1): ?>
-        <nav>
-            <ul class="pagination justify-content-center">
-                <?php if ($page > 1): ?>
-                    <li class="page-item">
-                        <a class="page-link" href="?page=<?= $page - 1 ?>&admin=<?= urlencode($filter_admin) ?>&action=<?= urlencode($filter_action) ?>&date_from=<?= urlencode($filter_date_from) ?>&date_to=<?= urlencode($filter_date_to) ?>">
-                            Previous
-                        </a>
-                    </li>
-                <?php endif; ?>
-                
-                <?php for ($i = max(1, $page - 2); $i <= min($totalPages, $page + 2); $i++): ?>
-                    <li class="page-item <?= $i === $page ? 'active' : '' ?>">
-                        <a class="page-link" href="?page=<?= $i ?>&admin=<?= urlencode($filter_admin) ?>&action=<?= urlencode($filter_action) ?>&date_from=<?= urlencode($filter_date_from) ?>&date_to=<?= urlencode($filter_date_to) ?>">
-                            <?= $i ?>
-                        </a>
-                    </li>
-                <?php endfor; ?>
-                
-                <?php if ($page < $totalPages): ?>
-                    <li class="page-item">
-                        <a class="page-link" href="?page=<?= $page + 1 ?>&admin=<?= urlencode($filter_admin) ?>&action=<?= urlencode($filter_action) ?>&date_from=<?= urlencode($filter_date_from) ?>&date_to=<?= urlencode($filter_date_to) ?>">
-                            Next
-                        </a>
-                    </li>
-                <?php endif; ?>
-            </ul>
-        </nav>
-    <?php endif; ?>
-</section>
+      </a>
+      <a href="/admin/program_list.php" class="<?= nav_active('program_list.php', $current) ?>">Programmes</a>
+      <a href="/admin/news_edit.php" class="<?= nav_active('news_edit.php', $current) ?>">Newsletters</a>
+      <a href="/admin/super_admin/activity_logs.php" class="<?= nav_active('activity_logs.php', $current) ?>">Logs</a>
+      <a href="/admin/logout.php" class="text-danger">Logout</a>
+    </nav>
 
-<?php require_once __DIR__ . '/../partials/footer.php'; ?>
+    <div class="d-lg-none">
+      <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#superAdminMobileNav">Menu</button>
+    </div>
+  </div>
+</header>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<!-- Mobile offcanvas -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="superAdminMobileNav">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">🛡️ Super Admin</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    <a class="d-block py-2" href="/admin/super_admin/dashboard.php">Dashboard</a>
+    <a class="d-block py-2" href="/admin/super_admin/admin_management.php">Admins <?php if ($locked_count > 0) echo "($locked_count)"; ?></a>
+    <a class="d-block py-2" href="/admin/program_list.php">Programmes</a>
+    <a class="d-block py-2" href="/admin/news_edit.php">Newsletters</a>
+    <a class="d-block py-2" href="/admin/super_admin/activity_logs.php">Logs</a>
+    <a class="d-block py-2 text-danger" href="/admin/logout.php">Logout</a>
+  </div>
+</div>
+
+<style>
+  .nav-main {
+    gap: 0.5rem;
+  }
+  
+  .nav-main a {
+    font-size: 0.95rem;
+    padding: 0.5rem 0.75rem;
+    white-space: nowrap;
+  }
+  
+  .dropdown {
+    position: relative;
+  }
+  
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    min-width: 200px;
+    padding: 0.5rem 0;
+    margin: 0;
+    font-size: 0.95rem;
+    color: #212529;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: 0.25rem;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,.175);
+  }
+  
+  .dropdown-menu.show {
+    display: block;
+  }
+  
+  .dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    clear: both;
+    font-weight: 400;
+    color: #212529;
+    text-align: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #f8f9fa;
+  }
+  
+  #questionsDropdown .bi-chevron-down {
+    transition: transform 0.2s;
+  }
+  
+  #questionsDropdown.active .bi-chevron-down,
+  .dropdown-menu.show ~ #questionsDropdown .bi-chevron-down {
+    transform: rotate(180deg);
+  }
+  
+  #totalQuestionsBadge,
+  #queriesBadgeDropdown,
+  #inquiriesBadgeDropdown {
+    animation: pulse 2s infinite;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.05);
+    }
+  }
+</style>
+
+<script>
+// Manual dropdown toggle
+document.addEventListener('DOMContentLoaded', function() {
+  const dropdownToggle = document.getElementById('questionsDropdown');
+  const dropdownMenu = document.getElementById('questionsMenu');
+  
+  if (dropdownToggle && dropdownMenu) {
+    dropdownToggle.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      dropdownMenu.classList.toggle('show');
+      
+      // Rotate arrow
+      const arrow = dropdownToggle.querySelector('.bi-chevron-down');
+      if (arrow) {
+        arrow.style.transform = dropdownMenu.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0deg)';
+      }
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!dropdownToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+        dropdownMenu.classList.remove('show');
+        const arrow = dropdownToggle.querySelector('.bi-chevron-down');
+        if (arrow) {
+          arrow.style.transform = 'rotate(0deg)';
+        }
+      }
+    });
+  }
+});
+
+// Auto-refresh notification badges every 30 seconds
+setInterval(function() {
+  // Fetch queries count
+  fetch('/admin/get_pending_count.php')
+    .then(response => response.json())
+    .then(data => {
+      updateBadge('queriesBadgeDropdown', data.count);
+      updateTotalBadge();
+      
+      if (data.count > (window.lastPendingCount || 0)) {
+        showBrowserNotification('query', data.count);
+      }
+      window.lastPendingCount = data.count;
+    })
+    .catch(err => console.error('Failed to fetch pending count:', err));
+
+  // Fetch inquiries count
+  fetch('/admin/get_pending_inquiries_count.php')
+    .then(response => response.json())
+    .then(data => {
+      updateBadge('inquiriesBadgeDropdown', data.count);
+      updateTotalBadge();
+      
+      if (data.count > (window.lastPendingInquiries || 0)) {
+        showBrowserNotification('inquiry', data.count);
+      }
+      window.lastPendingInquiries = data.count;
+    })
+    .catch(err => console.error('Failed to fetch pending inquiries count:', err));
+}, 30000);
+
+function updateBadge(badgeId, count) {
+  const badge = document.getElementById(badgeId);
+  const parentItem = badge?.closest('.dropdown-item');
+  
+  if (count > 0) {
+    if (badge) {
+      badge.textContent = count;
+    } else if (parentItem) {
+      const newBadge = document.createElement('span');
+      newBadge.id = badgeId;
+      newBadge.className = 'badge bg-warning text-dark';
+      newBadge.textContent = count;
+      parentItem.appendChild(newBadge);
+    }
+  } else {
+    if (badge) badge.remove();
+  }
+}
+
+function updateTotalBadge() {
+  const queriesBadge = document.getElementById('queriesBadgeDropdown');
+  const inquiriesBadge = document.getElementById('inquiriesBadgeDropdown');
+  const totalBadge = document.getElementById('totalQuestionsBadge');
+  
+  const queriesCount = queriesBadge ? parseInt(queriesBadge.textContent) : 0;
+  const inquiriesCount = inquiriesBadge ? parseInt(inquiriesBadge.textContent) : 0;
+  const total = queriesCount + inquiriesCount;
+  
+  if (total > 0) {
+    if (totalBadge) {
+      totalBadge.textContent = total;
+    } else {
+      const dropdown = document.getElementById('questionsDropdown');
+      if (dropdown) {
+        const newBadge = document.createElement('span');
+        newBadge.id = 'totalQuestionsBadge';
+        newBadge.className = 'badge bg-danger ms-1';
+        newBadge.style.cssText = 'font-size: 0.7rem; vertical-align: middle;';
+        newBadge.textContent = total;
+        dropdown.appendChild(newBadge);
+      }
+    }
+  } else {
+    if (totalBadge) totalBadge.remove();
+  }
+}
+
+function showBrowserNotification(type, count) {
+  if ('Notification' in window && Notification.permission === 'granted') {
+    const title = type === 'query' ? 'New Query Received' : 'New Inquiry Received';
+    const body = `You have ${count} pending ${type === 'query' ? (count === 1 ? 'query' : 'queries') : (count === 1 ? 'inquiry' : 'inquiries')}`;
+    
+    new Notification(title, {
+      body: body,
+      icon: '/images/ACE.png',
+      tag: type + '-notification',
+      requireInteraction: false
+    });
+  }
+}
+
+function requestNotificationPermission() {
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
+}
+
+window.addEventListener('load', requestNotificationPermission);
+</script>
