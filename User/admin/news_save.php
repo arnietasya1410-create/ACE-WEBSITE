@@ -3,6 +3,26 @@
 require_once __DIR__ . '/_inc.php';
 require_admin();
 
+function ace_normalize_newsletter_image_url($url) {
+    $url = trim((string)($url ?? ''));
+    if ($url === '') {
+        return '';
+    }
+
+    if (preg_match('#^https?://#i', $url)) {
+        return $url;
+    }
+
+    if ($url[0] !== '/') {
+        $url = '/' . $url;
+    }
+
+    $url = preg_replace('#^/User/#', '/', $url);
+    $url = preg_replace('#^/uploads/uploads/#', '/uploads/', $url);
+
+    return $url;
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: /admin/news_edit.php');
     exit;
@@ -23,7 +43,7 @@ $full_newsletter_url = trim($_POST['full_newsletter_url'] ?? '');
 $created_at = trim($_POST['created_at'] ?? ''); // Get the date input
 $existing_image = trim($_POST['existing_image'] ?? '');
 $remove_image = isset($_POST['remove_image']) ? 1 : 0;
-$image_url = $existing_image; // Start with existing image
+$image_url = ace_normalize_newsletter_image_url($existing_image); // Start with existing image
 
 // Validate
 if (empty($title)) {
