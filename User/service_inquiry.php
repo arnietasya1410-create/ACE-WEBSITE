@@ -14,9 +14,11 @@ $info = '';
 // Allow OTP testing without SMTP only on local/dev environments.
 $request_host = strtolower((string)($_SERVER['HTTP_HOST'] ?? ''));
 $request_ip = (string)($_SERVER['REMOTE_ADDR'] ?? '');
+$host_is_localhost = strpos($request_host, 'localhost') === 0;
+$host_is_loopback = strpos($request_host, '127.0.0.1') === 0;
 $is_local_request = in_array($request_ip, ['127.0.0.1', '::1'], true)
-    || str_starts_with($request_host, 'localhost')
-    || str_starts_with($request_host, '127.0.0.1');
+    || $host_is_localhost
+    || $host_is_loopback;
 $allow_dev_otp_fallback = (getenv('ACE_DEV_OTP_FALLBACK') === '1') || $is_local_request;
 
 // Get service type from POST (preferred) or URL parameter, default to 'general'
