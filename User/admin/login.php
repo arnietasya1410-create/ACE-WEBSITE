@@ -7,9 +7,9 @@ require_once __DIR__ . '/_inc.php';
 // If already logged in, redirect to appropriate dashboard
 if (isset($_SESSION['admin_id']) && isset($_SESSION['admin_user'])) {
     if (isset($_SESSION['admin_role']) && $_SESSION['admin_role'] === 'super_admin') {
-        header('Location: /User/admin/super_admin/dashboard.php');
+        header('Location: /admin/super_admin/dashboard.php');
     } else {
-        header('Location: /User/admin/dashboard.php');
+        header('Location: /admin/dashboard.php');
     }
     exit;
 }
