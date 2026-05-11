@@ -84,27 +84,27 @@ while ($row = $stmt->fetch_assoc()) {
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <a href="/User/admin/super_admin/admin_management.php" class="btn btn-outline-primary w-100">
+                        <a href="/admin/super_admin/admin_management.php" class="btn btn-outline-primary w-100">
                             <i class="bi bi-people-fill"></i> Manage Admins
                         </a>
                     </div>
                     <div class="col-md-4">
-                        <a href="/User/admin/super_admin/activity_logs.php" class="btn btn-outline-info w-100">
+                        <a href="/admin/super_admin/activity_logs.php" class="btn btn-outline-info w-100">
                             <i class="bi bi-clock-history"></i> Activity Logs
                         </a>
                     </div>
                     <div class="col-md-4">
-                        <a href="/User/admin/program_list.php" class="btn btn-outline-success w-100">
+                        <a href="/admin/program_list.php" class="btn btn-outline-success w-100">
                             <i class="bi bi-calendar-check"></i> Manage Programmes
                         </a>
                     </div>
                     <div class="col-md-4">
-                        <a href="/User/admin/social_media.php" class="btn btn-outline-success w-100">
+                        <a href="/admin/social_media.php" class="btn btn-outline-success w-100">
                             <i class="bi bi-share"></i> Manage Social Media
                         </a>
                     </div>
                     <div class="col-md-4">
-                        <a href="/User/admin/directcost.php" class="btn btn-outline-warning w-100">
+                        <a href="/admin/directcost.php" class="btn btn-outline-warning w-100">
                             <i class="bi bi-calculator"></i> Cost Calculator
                         </a>
                     </div>
