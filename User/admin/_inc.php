@@ -1,12 +1,12 @@
 <?php
 // Common admin include: session, DB loader (ACE/khun.php), auth helpers, small utilities.
-require_once __DIR__ . '/../security.php';
+require_once __DIR__ . '/../../security.php';
 ace_set_security_headers();
 ace_secure_session_start();
 ace_require_https();
 
 // load DB connector from ACE root (one level up)
-$khunPath = realpath(__DIR__ . '/../khun.php');
+$khunPath = realpath(__DIR__ . '/../../khun.php');
 if ($khunPath && file_exists($khunPath)) require_once $khunPath;
 
 // flash helpers
@@ -27,7 +27,7 @@ function require_admin() {
     }
     
     if (!isset($_SESSION['admin_id']) || !isset($_SESSION['admin_user'])) {
-        header('Location: /User/admin/login.php');
+        header('Location: /admin/login.php');
         exit;
     }
 }
@@ -54,7 +54,7 @@ function require_super_admin() {
                 <div class="alert alert-danger">
                     <h4>⛔ Access Denied</h4>
                     <p>You do not have permission to access this page. Super Admin privileges required.</p>
-                    <a href="/User/admin/dashboard.php" class="btn btn-primary">Return to Dashboard</a>
+                    <a href="/admin/dashboard.php" class="btn btn-primary">Return to Dashboard</a>
                 </div>
             </div>
         </body>
