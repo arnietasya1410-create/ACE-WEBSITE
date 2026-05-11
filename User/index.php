@@ -35,7 +35,7 @@
 
         .hero {
             min-height: 68vh;
-            background-image: url('/User/images/background.JPG');
+            background-image: url('/images/background.JPG');
             background-size: cover;
             background-position: center;
             display:flex;
@@ -174,6 +174,26 @@ function ace_truncate_text($text, $limit = 100, $suffix = '...') {
     return substr($text, 0, $cut) . $suffix;
 }
 
+function ace_normalize_newsletter_image_url($url) {
+    $url = trim((string)($url ?? ''));
+    if ($url === '') {
+        return '';
+    }
+
+    if (preg_match('#^https?://#i', $url)) {
+        return $url;
+    }
+
+    if ($url[0] !== '/') {
+        $url = '/' . $url;
+    }
+
+    $url = preg_replace('#^/User/#', '/', $url);
+    $url = preg_replace('#^/uploads/uploads/#', '/uploads/', $url);
+
+    return $url;
+}
+
 if ($khunPath && file_exists($khunPath)) {
     require_once $khunPath;
     $khunLoaded = true;
@@ -259,8 +279,8 @@ if ($khunLoaded && isset($conn) && $conn instanceof mysqli) {
                         <?php foreach($newsletters as $n): ?>
                         <div class="col-md-4">
                             <div class="bg-white rounded shadow-sm h-100 d-flex flex-column overflow-hidden">
-                                <div class="newsletter-img" 
-                                     style="background-image:url('<?= $n['image_url'] ?: '/User/images/newsletter-default.jpg' ?>'); 
+                                  <div class="newsletter-img" 
+                                      style="background-image:url('<?= htmlspecialchars(ace_normalize_newsletter_image_url($n['image_url'] ?? '') ?: '/images/newsletter-default.jpg') ?>'); 
                                             background-size:cover; background-position:center;">
                                 </div>
                                 <div class="p-3 d-flex flex-column flex-grow-1">
