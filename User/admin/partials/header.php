@@ -6,7 +6,7 @@ function nav_active($name, $current){ return $name === $current ? ' active' : ''
 <header class="navbar-fixed">
   <div class="container d-flex align-items-center justify-content-between py-2">
     <div class="d-flex align-items-center">
-      <a href="/User/admin/dashboard.php" class="me-2 brand-logos d-flex align-items-center">
+      <a href="/admin/dashboard.php" class="me-2 brand-logos d-flex align-items-center">
         <img src="/images/ACE.png" alt="ACE LOGO" style="height:72px;">
         <img src="/images/uniklrcmp.png" alt="UniKL RCMP" style="height:72px;">
         <img src="/images/hrdcorp.png" alt="HRD corp" style="height:72px;">
@@ -20,10 +20,10 @@ function nav_active($name, $current){ return $name === $current ? ' active' : ''
     </div>
 
     <nav class="nav-main d-none d-md-flex">
-      <a href="/User/admin/dashboard.php" class="<?= nav_active('dashboard.php', $current) ?>">Dashboard</a>
-      <a href="/User/admin/program_list.php" class="<?= nav_active('program_list.php', $current) ?>">Programmes</a>
-      <a href="/User/admin/news_edit.php" class="<?= nav_active('news_edit.php', $current) ?>">Newsletters</a>
-      <a href="/User/admin/logout.php" class="text-danger">Logout</a>
+      <a href="/admin/dashboard.php" class="<?= nav_active('dashboard.php', $current) ?>">Dashboard</a>
+      <a href="/admin/program_list.php" class="<?= nav_active('program_list.php', $current) ?>">Programmes</a>
+      <a href="/admin/news_edit.php" class="<?= nav_active('news_edit.php', $current) ?>">Newsletters</a>
+      <a href="/admin/logout.php" class="text-danger">Logout</a>
     </nav>
 
     <div class="d-md-none">
@@ -39,10 +39,10 @@ function nav_active($name, $current){ return $name === $current ? ' active' : ''
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
   </div>
   <div class="offcanvas-body">
-    <a class="d-block py-2" href="/User/admin/dashboard.php">Dashboard</a>
-    <a class="d-block py-2" href="/User/admin/program_list.php">Programmes</a>
-    <a class="d-block py-2" href="/User/admin/news_edit.php">Newsletters</a>
-    <a class="d-block py-2 text-danger" href="/User/admin/logout.php">Logout</a>
+    <a class="d-block py-2" href="/admin/dashboard.php">Dashboard</a>
+    <a class="d-block py-2" href="/admin/program_list.php">Programmes</a>
+    <a class="d-block py-2" href="/admin/news_edit.php">Newsletters</a>
+    <a class="d-block py-2 text-danger" href="/admin/logout.php">Logout</a>
   </div>
 </div>
 
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Auto-refresh notification badges every 30 seconds
 setInterval(function() {
   // Fetch queries count
-  fetch('/User/admin/get_pending_count.php')
+  fetch('/admin/get_pending_count.php')
     .then(response => response.json())
     .then(data => {
       updateBadge('queriesBadgeDropdown', data.count);
@@ -115,7 +115,7 @@ setInterval(function() {
     .catch(err => console.error('Failed to fetch pending count:', err));
 
   // Fetch inquiries count
-  fetch('/User/admin/get_pending_inquiries_count.php')
+  fetch('/admin/get_pending_inquiries_count.php')
     .then(response => response.json())
     .then(data => {
       updateBadge('inquiriesBadgeDropdown', data.count);
