@@ -2,7 +2,7 @@
 $current = basename($_SERVER['PHP_SELF'] ?? '');
 function nav_active($name, $current){ return $name === $current ? ' active' : ''; }
 ?>
-<link rel="stylesheet" href="/User/front.css">
+<link rel="stylesheet" href="/front.css">
 <header class="navbar-fixed">
   <div class="container d-flex align-items-center justify-content-between py-2">
     <div class="d-flex align-items-center">
