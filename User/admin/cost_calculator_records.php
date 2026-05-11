@@ -50,7 +50,7 @@ if (is_super_admin()) {
         <h4 class="mb-1">Saved Cost Calculators</h4>
         <small class="text-muted">Viewer: <?= htmlspecialchars($admin_username) ?></small>
       </div>
-      <a href="/User/admin/directcost.php" class="btn btn-accent btn-sm">Open Cost Calculator</a>
+      <a href="/admin/directcost.php" class="btn btn-accent btn-sm">Open Cost Calculator</a>
     </div>
 
     <?php if ($flash): ?>
@@ -87,11 +87,11 @@ if (is_super_admin()) {
                 <td><?= htmlspecialchars(number_format((float)$record['subtotal_after_hrd_charges'], 2)) ?></td>
                 <td><?= htmlspecialchars($record['created_at']) ?></td>
                 <td>
-                  <a class="btn btn-outline-primary btn-sm" href="/User/admin/cost_calculator_view.php?id=<?= (int)$record['id'] ?>">View</a>
-                  <a class="btn btn-outline-warning btn-sm" href="/User/admin/directcost.php?edit_id=<?= (int)$record['id'] ?>">Edit</a>
+                  <a class="btn btn-outline-primary btn-sm" href="/admin/cost_calculator_view.php?id=<?= (int)$record['id'] ?>">View</a>
+                  <a class="btn btn-outline-warning btn-sm" href="/admin/directcost.php?edit_id=<?= (int)$record['id'] ?>">Edit</a>
                   <?php $isOwner = (($record['created_by_username'] ?? '') === $admin_username); ?>
                   <?php if ($isOwner): ?>
-                    <form method="post" action="/User/admin/cost_calculator_delete.php" class="d-inline" onsubmit="return confirm('Delete this calculator record?');">
+                    <form method="post" action="/admin/cost_calculator_delete.php" class="d-inline" onsubmit="return confirm('Delete this calculator record?');">
                       <?= ace_csrf_input(); ?>
                       <input type="hidden" name="record_id" value="<?= (int)$record['id'] ?>">
                       <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
