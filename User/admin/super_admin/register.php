@@ -151,26 +151,15 @@ require_super_admin();
 $admin_username = $_SESSION['admin_user'] ?? 'Super Admin';
 $page_title = 'Register New Admin';
 
-// Flash helpers
-if (!function_exists('flash_set')) {
-    function flash_set($msg, $type = 'success'){ 
-        $_SESSION['flash'] = $msg; 
-        $_SESSION['flash_type'] = $type;
-    }
-}
-if (!function_exists('flash_get')) {
-    function flash_get(){ 
-        $msg = $_SESSION['flash'] ?? null; 
-        $type = $_SESSION['flash_type'] ?? 'success';
-        unset($_SESSION['flash'], $_SESSION['flash_type']); 
-        return ['msg' => $msg, 'type' => $type];
-    }
+function register_flash_set($msg, $type = 'success') {
+    $_SESSION['register_flash'] = $msg;
+    $_SESSION['register_flash_type'] = $type;
 }
 
 // Get flash message BEFORE any output
-$flash_data = flash_get();
-$flash_msg = $flash_data['msg'] ?? null;
-$flash_type = $flash_data['type'] ?? 'success';
+$flash_msg = $_SESSION['register_flash'] ?? null;
+$flash_type = $_SESSION['register_flash_type'] ?? 'success';
+unset($_SESSION['register_flash'], $_SESSION['register_flash_type']);
 
 // CSRF token
 $csrf = ace_csrf_token();
@@ -181,7 +170,7 @@ $success = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // CSRF check
     if (!ace_csrf_validate($_POST['csrf'] ?? '')) {
-        flash_set('Invalid request.', 'danger');
+        register_flash_set('Invalid request.', 'danger');
         header('Location: register.php');
         exit;
     }
@@ -194,22 +183,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Validate input
     if (empty($username) || strlen($username) < 3) {
-        flash_set('Username must be at least 3 characters.', 'warning');
+        register_flash_set('Username must be at least 3 characters.', 'warning');
         header('Location: register.php');
         exit;
     }
     if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        flash_set('Please enter a valid email address.', 'warning');
+        register_flash_set('Please enter a valid email address.', 'warning');
         header('Location: register.php');
         exit;
     }
     if (empty($password) || strlen($password) < 6) {
-        flash_set('Password must be at least 6 characters.', 'warning');
+        register_flash_set('Password must be at least 6 characters.', 'warning');
         header('Location: register.php');
         exit;
     }
     if ($password !== $password_confirm) {
-        flash_set('Passwords do not match.', 'warning');
+        register_flash_set('Passwords do not match.', 'warning');
         header('Location: register.php');
         exit;
     }
@@ -220,7 +209,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $check->execute();
     $res = $check->get_result();
     if ($res->num_rows > 0) {
-        flash_set('Username or email already registered.', 'danger');
+        register_flash_set('Username or email already registered.', 'danger');
         $check->close();
         header('Location: register.php');
         exit;
@@ -239,10 +228,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // LOG THE ACTIVITY
         log_admin_created($username, $is_super);
         
-        flash_set("✅ Admin account created successfully! Username: <strong>$username</strong>", 'success');
+        register_flash_set("Admin account created successfully for <strong>$username</strong>.", 'success');
         ace_csrf_rotate();
     } else {
-        flash_set('❌ Registration failed. Please try again.', 'danger');
+        register_flash_set('Registration failed. Please try again.', 'danger');
     }
     $stmt->close();
 
@@ -273,6 +262,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <?php require_once __DIR__ . '/../partials/header_super.php'; ?>
 
+<?php if ($flash_msg): ?>
+<div id="registerNoticeContainer" class="container mt-3" style="z-index:1101;">
+    <div class="alert alert-<?= htmlspecialchars($flash_type) ?> alert-dismissible fade show" role="alert">
+        <?= $flash_msg ?>
+        <button type="button" class="btn-close" id="registerNoticeClose" aria-label="Close"></button>
+    </div>
+</div>
+<?php endif; ?>
+
 <section class="section-card">
     <div class="container">
         <div class="register-card">
@@ -282,13 +280,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <h4><i class="bi bi-person-plus-fill"></i> Register New Admin</h4>
                         <small class="text-muted">Create a new admin account</small>
                     </div>
-
-                    <?php if ($flash_msg): ?>
-                        <div class="alert alert-<?= htmlspecialchars($flash_type) ?> alert-dismissible fade show" role="alert">
-                            <?= $flash_msg ?>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    <?php endif; ?>
 
                     <form method="POST" action="">
                         <input type="hidden" name="csrf" value="<?= htmlspecialchars($csrf) ?>">
@@ -340,5 +331,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php require_once __DIR__ . '/../partials/footer.php'; ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const container = document.getElementById('registerNoticeContainer');
+    const closeBtn = document.getElementById('registerNoticeClose');
+
+    if (!container || !closeBtn) return;
+
+    const AUTO_CLOSE_MS = 7000;
+    let timeoutId = setTimeout(function () {
+        container.style.display = 'none';
+    }, AUTO_CLOSE_MS);
+
+    closeBtn.addEventListener('click', function () {
+        clearTimeout(timeoutId);
+        container.style.display = 'none';
+    });
+});
+</script>
 </body>
 </html>
