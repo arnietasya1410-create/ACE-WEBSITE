@@ -89,6 +89,10 @@ unset($_SESSION['login_error']);
             <button type="submit" class="btn btn-primary btn-login w-100">
                 Login
             </button>
+
+            <a href="/index.php" class="btn btn-outline-secondary w-100 mt-2">
+                Back to Home
+            </a>
         </form>
 
         <div class="text-center mt-3">
