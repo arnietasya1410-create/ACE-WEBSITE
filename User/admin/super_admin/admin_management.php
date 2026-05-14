@@ -16,6 +16,137 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $action = $_POST['action'] ?? '';
     $target_admin_id = (int)($_POST['admin_id'] ?? 0);
+
+    if ($action === 'update_admin' && $target_admin_id > 0) {
+        $new_username = trim($_POST['username'] ?? '');
+        $new_email = trim($_POST['email'] ?? '');
+        $new_role = $_POST['role'] ?? 'admin';
+
+        if ($new_username === '' || strlen($new_username) < 3) {
+            $_SESSION['flash'] = 'Username must be at least 3 characters.';
+            $_SESSION['flash_type'] = 'warning';
+        } elseif (!filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['flash'] = 'Please provide a valid email address.';
+            $_SESSION['flash_type'] = 'warning';
+        } else {
+            $new_role = in_array($new_role, ['admin', 'super_admin'], true) ? $new_role : 'admin';
+
+            $stmt = $conn->prepare("SELECT username, role FROM admins WHERE admin_id = ? LIMIT 1");
+            $stmt->bind_param('i', $target_admin_id);
+            $stmt->execute();
+            $existing_result = $stmt->get_result();
+            $existing_admin = $existing_result->fetch_assoc();
+            $stmt->close();
+
+            if (!$existing_admin) {
+                $_SESSION['flash'] = 'Admin account not found.';
+                $_SESSION['flash_type'] = 'danger';
+            } else {
+                if ($existing_admin['role'] === 'super_admin' && $new_role !== 'super_admin') {
+                    $count_stmt = $conn->prepare("SELECT COUNT(*) AS cnt FROM admins WHERE role = 'super_admin' AND admin_id != ?");
+                    $count_stmt->bind_param('i', $target_admin_id);
+                    $count_stmt->execute();
+                    $count_result = $count_stmt->get_result();
+                    $remaining_super = (int)($count_result->fetch_assoc()['cnt'] ?? 0);
+                    $count_stmt->close();
+
+                    if ($remaining_super < 1) {
+                        $_SESSION['flash'] = 'At least one Super Admin must remain in the system.';
+                        $_SESSION['flash_type'] = 'danger';
+                        header('Location: admin_management.php');
+                        exit;
+                    }
+                }
+
+                $check_stmt = $conn->prepare("SELECT admin_id FROM admins WHERE (username = ? OR email = ?) AND admin_id != ? LIMIT 1");
+                $check_stmt->bind_param('ssi', $new_username, $new_email, $target_admin_id);
+                $check_stmt->execute();
+                $dup_result = $check_stmt->get_result();
+                $duplicate_exists = $dup_result->num_rows > 0;
+                $check_stmt->close();
+
+                if ($duplicate_exists) {
+                    $_SESSION['flash'] = 'Username or email is already in use by another admin.';
+                    $_SESSION['flash_type'] = 'danger';
+                } else {
+                    $update_stmt = $conn->prepare("UPDATE admins SET username = ?, email = ?, role = ? WHERE admin_id = ?");
+                    $update_stmt->bind_param('sssi', $new_username, $new_email, $new_role, $target_admin_id);
+                    $updated = $update_stmt->execute();
+                    $update_stmt->close();
+
+                    if ($updated) {
+                        if ($target_admin_id === (int)($_SESSION['admin_id'] ?? 0)) {
+                            $_SESSION['admin_user'] = $new_username;
+                            $_SESSION['admin_role'] = $new_role;
+                        }
+
+                        if ($existing_admin['role'] !== $new_role) {
+                            if ($new_role === 'super_admin') {
+                                log_admin_promoted($new_username);
+                            } else {
+                                log_admin_demoted($new_username);
+                            }
+                        }
+
+                        $_SESSION['flash'] = 'Admin details updated successfully.';
+                        $_SESSION['flash_type'] = 'success';
+                    } else {
+                        $_SESSION['flash'] = 'Failed to update admin details.';
+                        $_SESSION['flash_type'] = 'danger';
+                    }
+                }
+            }
+        }
+    }
+
+    if ($action === 'delete_admin' && $target_admin_id > 0) {
+        if ($target_admin_id === (int)($_SESSION['admin_id'] ?? 0)) {
+            $_SESSION['flash'] = 'You cannot delete your own account.';
+            $_SESSION['flash_type'] = 'danger';
+        } else {
+            $stmt = $conn->prepare("SELECT username, role FROM admins WHERE admin_id = ? LIMIT 1");
+            $stmt->bind_param('i', $target_admin_id);
+            $stmt->execute();
+            $target_result = $stmt->get_result();
+            $target_admin = $target_result->fetch_assoc();
+            $stmt->close();
+
+            if (!$target_admin) {
+                $_SESSION['flash'] = 'Admin account not found.';
+                $_SESSION['flash_type'] = 'danger';
+            } else {
+                if ($target_admin['role'] === 'super_admin') {
+                    $count_stmt = $conn->prepare("SELECT COUNT(*) AS cnt FROM admins WHERE role = 'super_admin' AND admin_id != ?");
+                    $count_stmt->bind_param('i', $target_admin_id);
+                    $count_stmt->execute();
+                    $count_result = $count_stmt->get_result();
+                    $remaining_super = (int)($count_result->fetch_assoc()['cnt'] ?? 0);
+                    $count_stmt->close();
+
+                    if ($remaining_super < 1) {
+                        $_SESSION['flash'] = 'Cannot delete the last Super Admin account.';
+                        $_SESSION['flash_type'] = 'danger';
+                        header('Location: admin_management.php');
+                        exit;
+                    }
+                }
+
+                $delete_stmt = $conn->prepare("DELETE FROM admins WHERE admin_id = ?");
+                $delete_stmt->bind_param('i', $target_admin_id);
+                $deleted = $delete_stmt->execute();
+                $delete_stmt->close();
+
+                if ($deleted) {
+                    log_admin_deleted($target_admin['username']);
+                    $_SESSION['flash'] = 'Admin account deleted successfully.';
+                    $_SESSION['flash_type'] = 'warning';
+                } else {
+                    $_SESSION['flash'] = 'Failed to delete admin account.';
+                    $_SESSION['flash_type'] = 'danger';
+                }
+            }
+        }
+    }
     
     if ($action === 'unlock' && $target_admin_id > 0) {
         $stmt = $conn->prepare("UPDATE admins SET is_locked = 0, failed_attempts = 0, locked_at = NULL WHERE admin_id = ?");
@@ -73,7 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Get all admins
 $admins = [];
-$stmt = $conn->query("SELECT admin_id, username, role, is_locked, failed_attempts, last_login, locked_at, created_at FROM admins ORDER BY role DESC, username ASC");
+$stmt = $conn->query("SELECT admin_id, username, email, role, is_locked, failed_attempts, last_login, locked_at, created_at FROM admins ORDER BY role DESC, username ASC");
 while ($row = $stmt->fetch_assoc()) {
     $admins[] = $row;
 }
@@ -119,6 +250,7 @@ unset($_SESSION['flash'], $_SESSION['flash_type']);
                         <thead>
                             <tr>
                                 <th>Username</th>
+                                <th>Email</th>
                                 <th>Role</th>
                                 <th>Status</th>
                                 <th>Failed Attempts</th>
@@ -130,6 +262,7 @@ unset($_SESSION['flash'], $_SESSION['flash_type']);
                             <?php foreach ($admins as $admin): ?>
                             <tr>
                                 <td><strong><?= htmlspecialchars($admin['username']) ?></strong></td>
+                                <td><?= htmlspecialchars($admin['email'] ?? '') ?></td>
                                 <td>
                                     <span class="badge bg-<?= $admin['role'] === 'super_admin' ? 'danger' : 'primary' ?>">
                                         <?= $admin['role'] === 'super_admin' ? '🛡️ Super Admin' : '👤 Admin' ?>
@@ -154,8 +287,12 @@ unset($_SESSION['flash'], $_SESSION['flash_type']);
                                     <?= $admin['last_login'] ? date('d M Y, H:i A', strtotime($admin['last_login'])) : '<span class="text-muted">Never</span>' ?>
                                 </td>
                                 <td>
-                                    <?php if ($admin['admin_id'] !== $_SESSION['admin_id']): ?>
-                                        <div class="btn-group btn-group-sm">
+                                    <div class="btn-group btn-group-sm">
+                                        <button type="button" class="btn btn-secondary" title="Edit Admin" data-bs-toggle="modal" data-bs-target="#editAdminModal<?= $admin['admin_id'] ?>">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+
+                                        <?php if ($admin['admin_id'] !== $_SESSION['admin_id']): ?>
                                             <?php if ($admin['is_locked']): ?>
                                                 <form method="POST" class="d-inline">
                                                     <?= ace_csrf_input(); ?>
@@ -175,25 +312,76 @@ unset($_SESSION['flash'], $_SESSION['flash_type']);
                                                     </button>
                                                 </form>
                                             <?php endif; ?>
-                                            
+
                                             <form method="POST" class="d-inline">
                                                 <?= ace_csrf_input(); ?>
                                                 <input type="hidden" name="action" value="reset_password">
                                                 <input type="hidden" name="admin_id" value="<?= $admin['admin_id'] ?>">
-                                                <button type="submit" class="btn btn-info" title="Reset Password" onclick="return confirm('Reset password to default (admin123)?')">
+                                                <button type="submit" class="btn btn-info" title="Reset Password" onclick="return confirm('Generate a new temporary password for this admin?')">
                                                     <i class="bi bi-key"></i>
                                                 </button>
                                             </form>
-                                        </div>
-                                    <?php else: ?>
-                                        <span class="text-muted">You</span>
-                                    <?php endif; ?>
+
+                                            <form method="POST" class="d-inline">
+                                                <?= ace_csrf_input(); ?>
+                                                <input type="hidden" name="action" value="delete_admin">
+                                                <input type="hidden" name="admin_id" value="<?= $admin['admin_id'] ?>">
+                                                <button type="submit" class="btn btn-danger" title="Delete Admin" onclick="return confirm('Delete this admin account permanently? This action cannot be undone.')">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        <?php else: ?>
+                                            <button type="button" class="btn btn-light" disabled title="Current account">You</button>
+                                        <?php endif; ?>
+                                    </div>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
+
+                <?php foreach ($admins as $admin): ?>
+                <div class="modal fade" id="editAdminModal<?= $admin['admin_id'] ?>" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form method="POST">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Edit Admin: <?= htmlspecialchars($admin['username']) ?></h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <?= ace_csrf_input(); ?>
+                                    <input type="hidden" name="action" value="update_admin">
+                                    <input type="hidden" name="admin_id" value="<?= $admin['admin_id'] ?>">
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Username</label>
+                                        <input type="text" name="username" class="form-control" minlength="3" required value="<?= htmlspecialchars($admin['username']) ?>">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" name="email" class="form-control" required value="<?= htmlspecialchars($admin['email'] ?? '') ?>">
+                                    </div>
+
+                                    <div class="mb-0">
+                                        <label class="form-label">Role</label>
+                                        <select name="role" class="form-select" required>
+                                            <option value="admin" <?= $admin['role'] === 'admin' ? 'selected' : '' ?>>Regular Admin</option>
+                                            <option value="super_admin" <?= $admin['role'] === 'super_admin' ? 'selected' : '' ?>>Super Admin</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
             </div>
         </div>
     </div>
