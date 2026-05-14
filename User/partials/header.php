@@ -105,7 +105,16 @@ function nav_active($name, $current){ return $name === $current ? ' active' : ''
         </h2>
         <div id="mobileServices" class="accordion-collapse collapse" data-bs-parent="#mobileServicesAccordion">
           <div class="accordion-body ps-4">
-            <a class="d-block py-2" href="service_inquiry.php">Contact Us</a>
+            <a class="d-block py-2" href="features.php">All Services</a>
+            <a class="d-block py-2" href="courses.php">Short Courses</a>
+            <a class="d-block py-2" href="features.php#consultancy">Consultancy Programme</a>
+            <a class="d-block py-2" href="micro_credential.php">Micro-Credential</a>
+            <a class="d-block py-2" href="certificate_programmes.php">Professional Certificate</a>
+            <a class="d-block py-2" href="features.php#specialized">Specialized Course</a>
+            <a class="d-block py-2" href="odl_programmes.php">Open and Distance Learning</a>
+            <a class="d-block py-2" href="apel.php">APEL</a>
+            <a class="d-block py-2" href="features.php#coe">Center of Excellence (CoE)</a>
+            <a class="d-block py-2" href="features.php#event-space-rental">Event Space Rental</a>
           </div>
         </div>
       </div>
